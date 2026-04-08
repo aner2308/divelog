@@ -1,0 +1,20 @@
+# Byggfiler
+bin/
+obj/
+
+# Publiceringsmapp
+publish/
+
+# SQLite databaser
+*.db
+*.db-shm
+*.db-wal
+
+# Loggfiler
+*.log
+
+# Windows-systemfiler
+Thumbs.db
+
+# Utvecklingsinställningar
+appsettings.Development.json
