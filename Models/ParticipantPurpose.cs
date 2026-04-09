@@ -10,7 +10,7 @@ public class ParticipantPurpose
     public int DivePurposeId { get; set; }
 
     //Navigation till deltagare
-    public DiveParticipant? DiveParticipant { get; set; }
+    public DiveParticipant DiveParticipant { get; set; } = null!;
     //Navigation till syfte
-    public DivePurpose? DivePurpose { get; set; }
+    public DivePurpose DivePurpose { get; set; } = null!;
 }

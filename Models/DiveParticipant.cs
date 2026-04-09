@@ -7,18 +7,22 @@ public class DiveParticipant
     public int DiveId { get; set; }
     public int PersonId { get; set; }
     public int RoleId { get; set; }
-    public double Depth { get; set; }
-    public int DiveTime { get; set; }
-    public int ExposureTime { get; set; }
-    public double NitrogenLoad { get; set; }
+    public double? Depth { get; set; }
+    public int? DiveTime { get; set; }
+    public int? ExposureTime { get; set; }
+    public double? NitrogenLoad { get; set; }
+
+    //Luftförbrukning vid pardyk
+    public int? AirPressureBefore { get; set; }
+    public int? AirPressureAfter { get; set; }
 
     //Navigation till dyk
-    public Dive? Dive { get; set; }
+    public Dive Dive { get; set; } = null!;
     //Navigation till person
-    public Person Person { get; set; }
+    public Person Person { get; set; } = null!;
     //Navigation till roll
-    public Role Role { get; set; }
+    public Role Role { get; set; } = null!;
 
     //Lista med syften som kopplas till deltagaren
-    public ICollection<ParticipantPurpose>? ParticipantPurposes { get; set; }
+    public ICollection<ParticipantPurpose>? ParticipantPurposes { get; set; } = new List<ParticipantPurpose>();
 }
