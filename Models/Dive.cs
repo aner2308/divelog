@@ -3,7 +3,7 @@ namespace divelog.Models;
 public class Dive
 {
     public int Id { get; set; }
-    public DateOnly Date { get; set; }
+    public DateTime Date { get; set; }
     public DateTime StartTime { get; set; }
     public string? LocationName { get; set; }
     public double Latitude { get; set; }

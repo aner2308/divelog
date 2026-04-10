@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace divelog.Models;
 
-public class Role
+public class DiveRole
 {
     public int Id { get; set; }
 

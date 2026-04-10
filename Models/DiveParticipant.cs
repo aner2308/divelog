@@ -6,7 +6,7 @@ public class DiveParticipant
     public int Id { get; set; }
     public int DiveId { get; set; }
     public int PersonId { get; set; }
-    public int RoleId { get; set; }
+    public int DiveRoleId { get; set; }
     public double? Depth { get; set; }
     public int? DiveTime { get; set; }
     public int? ExposureTime { get; set; }
@@ -21,7 +21,7 @@ public class DiveParticipant
     //Navigation till person
     public Person Person { get; set; } = null!;
     //Navigation till roll
-    public Role Role { get; set; } = null!;
+    public DiveRole DiveRole { get; set; } = null!;
 
     //Lista med syften som kopplas till deltagaren
     public ICollection<ParticipantPurpose>? ParticipantPurposes { get; set; } = new List<ParticipantPurpose>();
