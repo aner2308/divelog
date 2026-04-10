@@ -15,9 +15,9 @@ public class PersonRole
     public Person Person { get; set; } = null!;
 
     [Required]
-    public int RoleId { get; set; }
+    public int DiveRoleId { get; set; }
 
     //Kopplar till roll i class Role
-    [ForeignKey(nameof(RoleId))]
-    public Role Role { get; set; } = null!;
+    [ForeignKey(nameof(DiveRoleId))]
+    public DiveRole DiveRole { get; set; } = null!;
 }

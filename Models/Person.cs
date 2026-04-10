@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 
 namespace divelog.Models;
 
@@ -11,13 +12,14 @@ public class Person
     [MaxLength(100)]
     public string? Name { get; set; }
 
-    //Anställningsnummer
-    public int Number { get; set; }
+    //Signatur
+    public string? Signature { get; set; }
 
     //Personens grupptillhörighet
     [Required]
     public int GroupId { get; set; }
 
+    [ValidateNever]
     [ForeignKey(nameof(GroupId))]
     public Group Group { get; set; } = null!;
 
@@ -29,7 +31,7 @@ public class Person
 
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
-    public DateOnly StartedDiving { get; set; } 
+    public DateTime StartedDiving { get; set; } 
 
     //Markera bottagen person, men är kvar i databasen
     public bool IsDeleted { get; set; } = false;
