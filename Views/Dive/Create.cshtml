@@ -1,58 +1,358 @@
-@model divelog.Models.Dive
+@model divelog.ViewModels.CreateDiveViewModel
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Registrera dyk";
 }
 
-<h1>Create</h1>
+<h2>Registrera dyk</h2>
 
-<h4>Dive</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Date" class="control-label"></label>
-                <input asp-for="Date" class="form-control" />
-                <span asp-validation-for="Date" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="StartTime" class="control-label"></label>
-                <input asp-for="StartTime" class="form-control" />
-                <span asp-validation-for="StartTime" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="LocationName" class="control-label"></label>
-                <input asp-for="LocationName" class="form-control" />
-                <span asp-validation-for="LocationName" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Latitude" class="control-label"></label>
-                <input asp-for="Latitude" class="form-control" />
-                <span asp-validation-for="Latitude" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Longitude" class="control-label"></label>
-                <input asp-for="Longitude" class="form-control" />
-                <span asp-validation-for="Longitude" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Notes" class="control-label"></label>
-                <input asp-for="Notes" class="form-control" />
-                <span asp-validation-for="Notes" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
+<form asp-action="Create" method="post">
+    <!-- Felmeddelanden -->
+    <div asp-validation-summary="All" class="text-danger"></div>
+
+    <!-- GEMENSAM INFO -->
+    <div class="mb-3">
+        <label asp-for="Date"></label>
+        <input asp-for="Date" class="form-control" />
     </div>
-</div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
+    <div class="mb-3">
+        <label asp-for="LocationName"></label>
+        <input asp-for="LocationName" class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Latitude"></label>
+        <input asp-for="Latitude" class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Longitude"></label>
+        <input asp-for="Longitude" class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Notes"></label>
+        <textarea asp-for="Notes" class="form-control"></textarea>
+    </div>
+
+    <div class="mb-3">
+        <label>Dykledare</label>
+        <select asp-for="DiveLeaderId" class="form-control">
+            <option value="">Välj dykledare</option>
+            @if (Model.DiveLeaders != null)
+            {
+                @foreach (var person in Model.DiveLeaders)
+                {
+                    <option value="@person.Id">@person.Name</option>
+                }
+            }
+        </select>
+    </div>
+
+    <input type="hidden" asp-for="DiveType" id="DiveType" />
+    <!-- FLIKAR -->
+    <div class="mb-3">
+        <button type="button" onclick="showSurfaceSupport()">Dykare + Dykskötare</button>
+        <button type="button" onclick="showBuddyDive()">Pardyk</button>
+    </div>
+
+
+    <!-- PARDYK -->
+    <div id="buddyDiveSection" style="display:none;">
+
+        <h4>Pardyk</h4>
+
+        <div id="pairGroupsContainer">
+
+            <div class="pair-group border p-3 mb-3" id="pairGroup-0">
+
+                <h5>Pardyk 1</h5>
+
+                <div class="diversContainer">
+
+                @if (Model.PairGroups.Any())
+                {
+                    @for (int i = 0; i < Model.PairGroups[0].Divers.Count; i++)
+                    {
+                        <div class="border p-2 mb-2">
+
+                            <label>Dykare</label>
+                            <select name="PairGroups[0].Divers[@i].DiverId" class="form-control">
+                                @foreach (var person in Model.Divers)
+                                {
+                                    <option value="@person.Id">@person.Name</option>
+                                }
+                            </select>
+
+                            <label>Djup</label>
+                            <input name="PairGroups[0].Divers[@i].Depth" class="form-control" />
+
+                            <label>Dyktid</label>
+                            <input name="PairGroups[0].Divers[@i].DiveTime" class="form-control" />
+
+                        </div>
+                    }
+                }
+                </div>
+
+                <div class="pair-buttons">
+
+                    <button type="button"
+                            id="addThirdDiver-0"
+                            onclick="addDiverToPair(0)">
+                        + Lägg till tredje dykare
+                    </button>
+
+                    <button type="button"
+                            id="removeThirdDiver-0"
+                            onclick="removeThirdDiver(0)"
+                            style="display:none;">
+                        Ta bort tredje dykare
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <button type="button" onclick="addPairGroup()">
+            + Lägg till nytt pardyk
+        </button>
+
+    </div>
+
+
+    <!-- DYKARE + DYKSKÖTARE -->
+    <div id="surfaceSupportSection">
+
+        <h4>Dykare + Dykskötare</h4>
+
+        <div id="groupsContainer">
+
+            <div class="border p-3 mb-3 dive-group" id="group-0">
+
+                <label>Dykare</label>
+                <select name="SurfaceSupportGroups[0].DiverId" class="form-control">
+                    @foreach (var person in Model.Divers)
+                    {
+                        <option value="@person.Id">@person.Name</option>
+                    }
+                </select>
+
+                <label>Dykskötare</label>
+                <select name="SurfaceSupportGroups[0].SurfaceSupportId" class="form-control">
+                    @foreach (var person in Model.SurfaceSupports)
+                    {
+                        <option value="@person.Id">@person.Name</option>
+                    }
+                </select>
+
+                <label>Djup</label>
+                <input name="SurfaceSupportGroups[0].Depth" class="form-control" />
+
+                <label>Dyktid</label>
+                <input name="SurfaceSupportGroups[0].DiveTime" class="form-control" />
+
+            </div>
+
+        </div>
+
+        <button type="button" onclick="addGroup()">
+            + Lägg till dykare + dykskötare
+        </button>
+
+    </div>
+
+
+    <br />
+    <button type="submit" class="btn btn-primary">Spara</button>
+
+</form>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    <script>
+
+        //LUFT FRÅN YTAN
+        let groupIndex = 1;
+
+        function showBuddyDive() {
+            document.getElementById("buddyDiveSection").style.display = "block";
+            document.getElementById("surfaceSupportSection").style.display = "none";
+
+            document.getElementById("DiveType").value = "Pardyk";
+        }
+
+        function showSurfaceSupport() {
+            document.getElementById("buddyDiveSection").style.display = "none";
+            document.getElementById("surfaceSupportSection").style.display = "block";
+
+            document.getElementById("DiveType").value = "LuftFrånYtan";
+        }
+
+        function addGroup() {
+
+            //Räknar antal dykare
+            let currentGroups = document.querySelectorAll(".dive-group").length;
+
+            //Kontrollerar hur många dykare som finns ch sätter stopp vid 4
+            if (currentGroups >= 4) {
+                alert("Max 4 grupper tillåtna");
+                return;
+            }
+
+            let container = document.getElementById("groupsContainer");
+
+            container.innerHTML += `
+                        <div class="border p-3 mb-3 dive-group" id="group-${groupIndex}">
+
+                            <label>Dykare</label>
+                            <select name="SurfaceSupportGroups[${groupIndex}].DiverId" class="form-control">
+                                @foreach (var person in Model.Divers)
+                                {
+                                                    <option value="@person.Id">@person.Name</option>
+                                }
+                            </select>
+
+                            <label>Dykskötare</label>
+                            <select name="SurfaceSupportGroups[${groupIndex}].SurfaceSupportId" class="form-control">
+                                @foreach (var person in Model.SurfaceSupports)
+                                {
+                                                    <option value="@person.Id">@person.Name</option>
+                                }
+                            </select>
+
+                            <label>Djup</label>
+                            <input name="SurfaceSupportGroups[${groupIndex}].Depth" class="form-control"/>
+
+                            <label>Dyktid</label>
+                            <input name="SurfaceSupportGroups[${groupIndex}].DiveTime" class="form-control"/>
+
+                            <button type="button" 
+                                    class="btn btn-danger mt-2"
+                                    onclick="removeGroup(${groupIndex})">
+                                Ta bort grupp
+                            </button>
+
+                        </div>
+                    `;
+
+            groupIndex++;
+        }
+
+        function removeGroup(index) {
+            document.getElementById(`group-${index}`).remove();
+        }
+
+        //PARDYK
+        let pairIndex = 1;
+
+        function addPairGroup() {
+
+            let container = document.getElementById("pairGroupsContainer");
+
+            container.innerHTML += `
+            <div class="pair-group border p-3 mb-3" id="pairGroup-${pairIndex}">
+
+                <h5>Pardyk ${pairIndex + 1}</h5>
+
+                <div class="diversContainer">
+
+                    ${generateDiverHtml(pairIndex, 0)}
+                    ${generateDiverHtml(pairIndex, 1)}
+
+                </div>
+
+                <div class="pair-buttons">
+
+                    <button type="button"
+                            id="addThirdDiver-${pairIndex}"
+                            onclick="addDiverToPair(${pairIndex})">
+                        + Lägg till tredje dykare
+                    </button>
+
+                    <button type="button"
+                            id="removeThirdDiver-${pairIndex}"
+                            onclick="removeThirdDiver(${pairIndex})"
+                            style="display:none;">
+                        Ta bort tredje dykare
+                    </button>
+
+                </div>
+
+                <button type="button" onclick="removePairGroup(${pairIndex})">
+                    Ta bort pardyk
+                </button>
+
+            </div>
+        `;
+
+            pairIndex++;
+        }
+
+        function generateDiverHtml(pairGroupIndex, diverIndex) {
+
+    return `
+        <div class="border p-2 mb-2">
+
+            <label>Dykare</label>
+            <select name="PairGroups[${pairGroupIndex}].Divers[${diverIndex}].DiverId" class="form-control">
+                @foreach (var person in Model.Divers)
+                {
+                    <option value="@person.Id">@person.Name</option>
+                }
+            </select>
+
+            <label>Djup</label>
+            <input name="PairGroups[${pairGroupIndex}].Divers[${diverIndex}].Depth" class="form-control" />
+
+            <label>Dyktid</label>
+            <input name="PairGroups[${pairGroupIndex}].Divers[${diverIndex}].DiveTime" class="form-control" />
+
+        </div>
+    `;
+}
+
+//Lägg till dykare i dykpar(pardyk)
+function addDiverToPair(pairGroupIndex) {
+
+    let pairGroup = document.querySelector(`#pairGroup-${pairGroupIndex} .diversContainer`);
+
+    let diverCount = pairGroup.children.length;
+
+    if (diverCount >= 3) return;
+
+    pairGroup.innerHTML += generateDiverHtml(pairGroupIndex, diverCount);
+
+    document.getElementById(`addThirdDiver-${pairGroupIndex}`).style.display = "none";
+    document.getElementById(`removeThirdDiver-${pairGroupIndex}`).style.display = "inline-block";
+}
+
+//Ta bort dykare #3 från pardyk
+function removeThirdDiver(pairGroupIndex) {
+
+    let pairGroup = document.querySelector(`#pairGroup-${pairGroupIndex} .diversContainer`);
+
+    let divers = pairGroup.children;
+
+    if (divers.length <= 2) return;
+
+    pairGroup.removeChild(divers[divers.length - 1]);
+
+    document.getElementById(`addThirdDiver-${pairGroupIndex}`).style.display = "inline-block";
+    document.getElementById(`removeThirdDiver-${pairGroupIndex}`).style.display = "none";
+}
+
+function removePairGroup(index){
+    document.getElementById(`pairGroup-${index}`).remove();
+}
+
+    </script>
+
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
 }
