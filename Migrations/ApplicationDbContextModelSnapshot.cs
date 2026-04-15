@@ -442,14 +442,14 @@ namespace divelog.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Name")
-                        .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Signature")
+                        .HasMaxLength(10)
                         .HasColumnType("TEXT");
 
-                    b.Property<DateTime>("StartedDiving")
+                    b.Property<DateTime?>("StartedDiving")
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");

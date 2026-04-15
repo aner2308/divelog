@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using divelog.Data;
 using divelog.Models;
+using divelog.ViewModels;
 
 namespace divelog.Controllers
 {
@@ -20,114 +21,266 @@ namespace divelog.Controllers
         }
 
         // GET: Person
+        //Hämtar alla personer från databasen
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.Persons.Include(p => p.Group);
-            return View(await applicationDbContext.ToListAsync());
+            //Hämtar alla personer inklusive grupper
+            var persons = _context.Persons.Include(p => p.Group);
+            //Returnerar en lista med alla personer
+            return View(await persons.ToListAsync());
         }
 
         // GET: Person/Details/5
+        //Hämtar en specifik person (med all information) fån databasen
         public async Task<IActionResult> Details(int? id)
         {
+            //Om id inte finns
             if (id == null)
             {
                 return NotFound();
             }
 
+            //Hämtar person inklusive grupp och roller
             var person = await _context.Persons
                 .Include(p => p.Group)
+                    .Include(p => p.PersonRoles)
+                    .ThenInclude(pr => pr.DiveRole)
                 .FirstOrDefaultAsync(m => m.Id == id);
+
+            //Om person inte finns
             if (person == null)
             {
                 return NotFound();
             }
 
+            //Returnerar en person
             return View(person);
         }
 
         // GET: Person/Create
+        //Förbereder data som behövs för formuläret
         public IActionResult Create()
         {
+            //Skapar en ViewModel och fyller den med alla roller
+            var vm = new PersonCreateViewModel
+            {
+                AvailableRoles = _context.DiveRoles.ToList(),
+                StartedDiving = DateTime.Today
+            };
+
+            //Skapar dropdown för groups
             ViewData["GroupId"] = new SelectList(_context.Groups, "Id", "Name");
-            return View();
+
+            return View(vm);
         }
 
         // POST: Person/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        //Lägger till ny person i databasen
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Name,Signature,GroupId,StartedDiving")] Person person)
+        public async Task<IActionResult> Create(PersonCreateViewModel vm)
         {
-            if (ModelState.IsValid)
-            {
-                person.CreatedAt = DateTime.UtcNow;
-                person.IsDeleted = false;
+            //Hämta id för rollen Dykare
+            var diverRoleId = await _context.DiveRoles
+                .Where(r => r.Name == "Dykare")
+                .Select(r => r.Id)
+                .FirstOrDefaultAsync();
 
-                _context.Add(person);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+            //Kontrollera om personen är dykare
+            bool isDiver = vm.SelectedRoleIds.Contains(diverRoleId);
+
+            //Felhantering
+            //Kontrollera korrekt ifyllt fält för namn
+            if (string.IsNullOrWhiteSpace(vm.Name))
+            {
+                ModelState.AddModelError("Name", "Namn måste anges");
             }
-            ViewData["GroupId"] = new SelectList(_context.Groups, "Id", "Name", person.GroupId);
-            return View(person);
+            //Kontrollera korrekt ifyllt fält för signatur
+            if (string.IsNullOrWhiteSpace(vm.Signature))
+            {
+                ModelState.AddModelError("Signature", "Signatur måste anges");
+            }
+            //Kontrollera att StartedDiving är ifyllt om personen är dykare
+            if (isDiver && vm.StartedDiving == null)
+            {
+                ModelState.AddModelError("StartedDiving", "Datum för när personen började dyka måste anges");
+            }
+
+            //Om formulärdata är felaktig
+            if (!ModelState.IsValid)
+            {
+                //Återställ roller
+                vm.AvailableRoles = await _context.DiveRoles.ToListAsync();
+
+                //Återställ grupper
+                ViewData["GroupId"] = new SelectList(_context.Groups, "Id", "Name", vm.GroupId);
+
+                return View(vm);
+            }
+
+            //Skapa person
+            var person = new Person
+            {
+                Name = vm.Name,
+                Signature = vm.Signature,
+                GroupId = vm.GroupId,
+                StartedDiving = isDiver ? vm.StartedDiving : null, //Om personen inte är dykare sätts StartedDiving till null
+                CreatedAt = DateTime.UtcNow, //Sätts automatiskt till aktuell tid
+                PersonRoles = new List<PersonRole>()
+            };
+
+            //Lägg till valda roller
+            if (vm.SelectedRoleIds != null && vm.SelectedRoleIds.Any())
+            {
+                person.PersonRoles = vm.SelectedRoleIds
+                    .Select(roleId => new PersonRole
+                    {
+                        DiveRoleId = roleId
+                    })
+                    .ToList();
+            }
+
+            //Spara
+            _context.Persons.Add(person);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: Person/Edit/5
+        //Förbereder data som behövs för formuläret
         public async Task<IActionResult> Edit(int? id)
         {
+            //Kontrollerar om id finns
             if (id == null)
             {
                 return NotFound();
             }
 
-            var person = await _context.Persons.FindAsync(id);
+            //Hämtar person med roller
+            var person = await _context.Persons
+            .Include(p => p.PersonRoles)
+            .FirstOrDefaultAsync(p => p.Id == id);
+
+            //Kontrollerar om person finns
             if (person == null)
             {
                 return NotFound();
             }
+
+            //Skapar viewModel och fyller med data från person
+            var vm = new PersonEditViewModel
+            {
+                Id = person.Id,
+                Name = person.Name,
+                Signature = person.Signature,
+                GroupId = person.GroupId,
+                StartedDiving = person.StartedDiving ?? DateTime.Today,
+                AvailableRoles = _context.DiveRoles.ToList(),
+                SelectedRoleIds = person.PersonRoles.Select(pr => pr.DiveRoleId).ToList()
+            };
+
+            //Skapar en dropdown för grupper
             ViewData["GroupId"] = new SelectList(_context.Groups, "Id", "Name", person.GroupId);
-            return View(person);
+
+            return View(vm);
         }
 
         // POST: Person/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        //Uppdatera person i databasen
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Signature,GroupId,CreatedAt,StartedDiving,IsDeleted")] Person person)
+        public async Task<IActionResult> Edit(PersonEditViewModel vm)
         {
-            if (id != person.Id)
+            //Hämta id för rollen Dykare
+            var diverRoleId = await _context.DiveRoles
+                .Where(r => r.Name == "Dykare")
+                .Select(r => r.Id)
+                .FirstOrDefaultAsync();
+
+            //Kontrollera om personen är dykare
+            bool isDiver = vm.SelectedRoleIds.Contains(diverRoleId);
+
+            //Felhantering
+            //Kontrollera korrekt ifyllt fält för namn
+            if (string.IsNullOrWhiteSpace(vm.Name))
+            {
+                ModelState.AddModelError("Name", "Namn måste anges");
+            }
+            //Kontrollera korrekt ifyllt fält för signatur
+            if (string.IsNullOrWhiteSpace(vm.Signature))
+            {
+                ModelState.AddModelError("Signature", "Signatur måste anges");
+            }
+            //Kontrollera att StartedDiving är ifyllt om personen är dykare
+            if (isDiver && vm.StartedDiving == null)
+            {
+                ModelState.AddModelError("StartedDiving", "Datum för när personen började dyka måste anges");
+            }
+
+            //Om formulärdata är felaktig
+            if (!ModelState.IsValid)
+            {
+                //Återställ dykroller
+                vm.AvailableRoles = await _context.DiveRoles.ToListAsync();
+                //Återställ grupper
+                ViewData["GroupId"] = new SelectList(_context.Groups, "Id", "Name", vm.GroupId);
+
+                return View(vm);
+            }
+
+            //Hämtar person från databasen
+            var person = await _context.Persons
+                .Include(p => p.PersonRoles)
+                .FirstOrDefaultAsync(p => p.Id == vm.Id);
+
+            //Om person inte finns
+            if (person == null)
             {
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
+            //Uppdaterar data
+            person.Name = vm.Name;
+            person.Signature = vm.Signature;
+            person.GroupId = vm.GroupId;
+            //Om personen inte är dykare sätts StartedDiving till null
+            person.StartedDiving = isDiver ? vm.StartedDiving : null;
+
+            //Uppdaterar roller
+            var existingRoleIds = person.PersonRoles.Select(pr => pr.DiveRoleId).ToList();
+
+            //Tar bort roller som inte längre är valda
+            var rolesToRemove = person.PersonRoles.Where(pr => !vm.SelectedRoleIds.Contains(pr.DiveRoleId)).ToList();
+            _context.PersonRoles.RemoveRange(rolesToRemove);
+
+            //Lägger till nya roller
+            var rolesToAdd = vm.SelectedRoleIds.Where(rid => !existingRoleIds.Contains(rid)).ToList();
+
+            //Uppdaterar och registrerar valda roller till person
+            foreach (var roleId in rolesToAdd)
             {
-                try
+                _context.PersonRoles.Add(new PersonRole
                 {
-                    _context.Update(person);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!PersonExists(person.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
+                    PersonId = person.Id,
+                    DiveRoleId = roleId
+                });
             }
-            ViewData["GroupId"] = new SelectList(_context.Groups, "Id", "Name", person.GroupId);
-            return View(person);
+
+            //Sparar ändringar
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: Person/Delete/5
+        //Hämta person på sidan delete
         public async Task<IActionResult> Delete(int? id)
         {
+            //Om id inte finns
             if (id == null)
             {
                 return NotFound();
@@ -135,7 +288,11 @@ namespace divelog.Controllers
 
             var person = await _context.Persons
                 .Include(p => p.Group)
+                .Include(p => p.PersonRoles)
+                .ThenInclude(pr => pr.DiveRole)
                 .FirstOrDefaultAsync(m => m.Id == id);
+
+            //Om person inte finns
             if (person == null)
             {
                 return NotFound();
@@ -145,16 +302,21 @@ namespace divelog.Controllers
         }
 
         // POST: Person/Delete/5
+        //Ta bort person från databas
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
+            //Hämta person med hjälp av id
             var person = await _context.Persons.FindAsync(id);
+
             if (person != null)
             {
+                //Ta bort personen
                 _context.Persons.Remove(person);
             }
 
+            //Sparar ändringar
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }

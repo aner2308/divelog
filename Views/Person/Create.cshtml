@@ -1,10 +1,10 @@
-@model divelog.Models.Person
+@model divelog.ViewModels.PersonCreateViewModel
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Ny person";
 }
 
-<h1>Create</h1>
+<h1>Ny person</h1>
 
 <h4>Person</h4>
 <hr />
@@ -15,35 +15,72 @@
             <div asp-validation-summary="All" class="text-danger"></div>
             
             <div class="form-group">
-                <label asp-for="Name" class="control-label"></label>
-                <input asp-for="Name" class="form-control" />
-                <span asp-validation-for="Name" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Signature" class="control-label"></label>
+                <label asp-for="Signature" class="control-label">Signatur:</label>
                 <input asp-for="Signature" class="form-control" />
-                <span asp-validation-for="Signature" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="GroupId" class="control-label"></label>
-                <select asp-for="GroupId" class ="form-control" asp-items="ViewBag.GroupId"></select>
+                <label asp-for="Name" class="control-label">Namn:</label>
+                <input asp-for="Name" class="form-control" />
             </div>
             <div class="form-group">
-                <label asp-for="StartedDiving" class="control-label"></label>
+                <label asp-for="GroupId" class="control-label">Grupp:</label>
+                <select asp-for="GroupId" class="form-control" asp-items="ViewBag.GroupId"></select>
+            </div>
+            <div class="form-group">
+                <label>Roller:</label>
+                @for (int i = 0; i < Model.AvailableRoles.Count; i++)
+                {
+                    <div class="form-check">
+                        <input class="form-check-input role-checkbox" type="checkbox" name="SelectedRoleIds"
+                               value="@Model.AvailableRoles[i].Id" id="role_@i" data-role-name="@Model.AvailableRoles[i].Name"
+                        @(Model.SelectedRoleIds.Contains(Model.AvailableRoles[i].Id) ? "checked" : "") />
+                        <label class="form-check-label" for="role_@i">
+                            @Model.AvailableRoles[i].Name
+                        </label>
+                    </div>
+                }
+            </div>
+            <div class="form-group" id="startedDivingField" style="display:none;">
+                <label asp-for="StartedDiving" class="control-label">Började dyka:</label>
                 <input asp-for="StartedDiving" type="date" class="form-control" />
-                <span asp-validation-for="StartedDiving" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+                <input type="submit" value="Spara" class="btn btn-primary" />
             </div>
         </form>
     </div>
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Index">Tillbaka till Personal</a>
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script>
+        //Funktion som visar eller döljer fältet för StartedDiving
+        function toggleStartedDiving() {
+            let show = false;
+
+            //Kontrollerar om checkboxen för dykare är ifylld, om checkboxen är ifylld ska datumfältet visas
+            document.querySelectorAll(".role-checkbox").forEach(cb => {
+                if (cb.checked && cb.dataset.roleName === "Dykare") {
+                    show = true;
+                }
+            });
+
+            document.getElementById("startedDivingField").style.display =
+                show ? "block" : "none";
+        }
+
+        document.querySelectorAll(".role-checkbox").forEach(cb => {
+            cb.addEventListener("change", toggleStartedDiving);
+        });
+
+        //Kör direkt när sidan laddas
+        toggleStartedDiving();
+    </script>
 }
