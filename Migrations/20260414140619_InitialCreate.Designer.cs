@@ -11,7 +11,7 @@ using divelog.Data;
 namespace divelog.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260410092153_InitialCreate")]
+    [Migration("20260414140619_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -445,14 +445,14 @@ namespace divelog.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Name")
-                        .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Signature")
+                        .HasMaxLength(10)
                         .HasColumnType("TEXT");
 
-                    b.Property<DateTime>("StartedDiving")
+                    b.Property<DateTime?>("StartedDiving")
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");

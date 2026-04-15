@@ -8,14 +8,12 @@ public class Person
 {
     public int Id { get; set; }
 
-    [Required]
     [MaxLength(100)]
     public string? Name { get; set; }
 
-    //Signatur
+    [MaxLength(10)]
     public string? Signature { get; set; }
 
-    //Personens grupptillhörighet
     [Required]
     public int GroupId { get; set; }
 
@@ -23,15 +21,15 @@ public class Person
     [ForeignKey(nameof(GroupId))]
     public Group Group { get; set; } = null!;
 
+    public DateTime? StartedDiving { get; set; }
+
+    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+
     //Roller personen har (dykare, dykledare, dykskötare)
     public ICollection<PersonRole> PersonRoles { get; set; } = new List<PersonRole>();
 
     //Dyk där person är dykledare
     public ICollection<Dive> LedDives { get; set; } = new List<Dive>();
-
-    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-
-    public DateTime StartedDiving { get; set; } 
 
     //Markera bottagen person, men är kvar i databasen
     public bool IsDeleted { get; set; } = false;
