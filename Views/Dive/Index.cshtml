@@ -1,65 +1,82 @@
 @model IEnumerable<divelog.Models.Dive>
 
-@{
-    ViewData["Title"] = "Index";
-}
-
-<h1>Index</h1>
+<h2>Dyklogg</h2>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Create" class="btn btn-primary">Nytt dyk</a>
 </p>
+
 <table class="table">
     <thead>
         <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Date)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.StartTime)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.LocationName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Latitude)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Longitude)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Notes)
-            </th>
+            <th>Datum</th>
+            <th>Plats</th>
+            <th>Dykledare</th>
+            <th>Dykare</th>
+            <th>Dykskötare</th>
+            <th>Syfte</th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Date)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.StartTime)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.LocationName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Latitude)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Longitude)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Notes)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
+
+@foreach (var dive in Model)
+{
+    var diveLeader = dive.DiveParticipants?
+        .FirstOrDefault(p => p.DiveRoleId == 2)?.Person;
+
+    var divers = dive.DiveParticipants?
+        .Where(p => p.DiveRoleId == 1)
+        .Select(p => p.Person)
+        .ToList();
+
+    var diveSupport = dive.DiveParticipants?
+        .FirstOrDefault(p => p.DiveRoleId == 3)?.Person;
+
+    <tr>
+        <td>
+            @dive.Date.ToString("yyyy-MM-dd")
+        </td>
+
+        <td>
+            @dive.LocationName
+        </td>
+
+        <td>
+            @if (diveLeader != null)
+            {
+                @($"{diveLeader.Signature} - ")<i>@($"{diveLeader.Name}")</i>
+            }
+        </td>
+
+        <td>
+            @if (divers != null)
+            {
+                foreach (var d in divers)
+                {
+                    <div>@($"{d.Signature} - ")<i>@($"{d.Name}")</i></div>
+                }
+            }
+        </td>
+
+        <td>
+            @if (diveSupport != null)
+            {
+                @($"{diveSupport.Signature} - ")<i>@($"{diveSupport.Name}")</i>
+            }
+        </td>
+
+        <td>
+            @dive.DivePurpose?.Name
+        </td>
+
+        <td>
+            <a asp-action="Edit" asp-route-id="@dive.Id">Redigera</a> |
+            <a asp-action="Details" asp-route-id="@dive.Id">Detaljer</a> |
+            <a asp-action="Delete" asp-route-id="@dive.Id">Radera</a>
+        </td>
+    </tr>
 }
+
     </tbody>
 </table>

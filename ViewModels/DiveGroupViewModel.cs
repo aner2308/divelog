@@ -3,7 +3,7 @@ namespace divelog.ViewModels;
 public class DiveGroupViewModel
 {
     // Dykare (ska alltid finnas)
-    public int DiverId { get; set; }
+    public int? DiverId { get; set; }
 
     // Dykskötare (bara i vissa fall)
     public int? SurfaceSupportId { get; set; }

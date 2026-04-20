@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace divelog.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class updatedTimeStamps : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -228,16 +228,23 @@ namespace divelog.Migrations
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     Date = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    StartTime = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    StartTime = table.Column<TimeSpan>(type: "TEXT", nullable: false),
                     LocationName = table.Column<string>(type: "TEXT", nullable: true),
                     Latitude = table.Column<double>(type: "REAL", nullable: false),
                     Longitude = table.Column<double>(type: "REAL", nullable: false),
                     Notes = table.Column<string>(type: "TEXT", nullable: true),
+                    DiveType = table.Column<int>(type: "INTEGER", nullable: false),
+                    DivePurposeId = table.Column<int>(type: "INTEGER", nullable: true),
                     PersonId = table.Column<int>(type: "INTEGER", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Dives", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Dives_DivePurposes_DivePurposeId",
+                        column: x => x.DivePurposeId,
+                        principalTable: "DivePurposes",
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_Dives_Persons_PersonId",
                         column: x => x.PersonId,
@@ -308,32 +315,6 @@ namespace divelog.Migrations
                         principalTable: "Persons",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "ParticipantPurposes",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    DiveParticipantId = table.Column<int>(type: "INTEGER", nullable: false),
-                    DivePurposeId = table.Column<int>(type: "INTEGER", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ParticipantPurposes", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_ParticipantPurposes_DiveParticipants_DiveParticipantId",
-                        column: x => x.DiveParticipantId,
-                        principalTable: "DiveParticipants",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_ParticipantPurposes_DivePurposes_DivePurposeId",
-                        column: x => x.DivePurposeId,
-                        principalTable: "DivePurposes",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.InsertData(
@@ -428,19 +409,14 @@ namespace divelog.Migrations
                 column: "Date");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Dives_DivePurposeId",
+                table: "Dives",
+                column: "DivePurposeId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Dives_PersonId",
                 table: "Dives",
                 column: "PersonId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_ParticipantPurposes_DiveParticipantId",
-                table: "ParticipantPurposes",
-                column: "DiveParticipantId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_ParticipantPurposes_DivePurposeId",
-                table: "ParticipantPurposes",
-                column: "DivePurposeId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_PersonRoles_DiveRoleId",
@@ -478,7 +454,7 @@ namespace divelog.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "ParticipantPurposes");
+                name: "DiveParticipants");
 
             migrationBuilder.DropTable(
                 name: "PersonRoles");
@@ -490,16 +466,13 @@ namespace divelog.Migrations
                 name: "AspNetUsers");
 
             migrationBuilder.DropTable(
-                name: "DiveParticipants");
-
-            migrationBuilder.DropTable(
-                name: "DivePurposes");
+                name: "Dives");
 
             migrationBuilder.DropTable(
                 name: "DiveRoles");
 
             migrationBuilder.DropTable(
-                name: "Dives");
+                name: "DivePurposes");
 
             migrationBuilder.DropTable(
                 name: "Persons");
