@@ -14,7 +14,6 @@ public class ApplicationDbContext : IdentityDbContext
     public DbSet<Dive> Dives { get; set; }
     public DbSet<DiveParticipant> DiveParticipants { get; set; }
     public DbSet<DivePurpose> DivePurposes { get; set; }
-    public DbSet<ParticipantPurpose> ParticipantPurposes { get; set; }
     public DbSet<Person> Persons { get; set; }
     public DbSet<DiveRole> DiveRoles { get; set; } = null!;
     public DbSet<PersonRole> PersonRoles { get; set; }
@@ -76,18 +75,6 @@ public class ApplicationDbContext : IdentityDbContext
             .HasForeignKey(dp => dp.DiveRoleId)
             //Man kan inte ta bort en roll som en person har
             .OnDelete(DeleteBehavior.Restrict);
-
-        //Relation mellan DiveParticipant och ParticipantPurpose
-        modelBuilder.Entity<ParticipantPurpose>()
-            .HasOne(pp => pp.DiveParticipant)
-            .WithMany(dp => dp.ParticipantPurposes)
-            .HasForeignKey(pp => pp.DiveParticipantId);
-
-        //Relation mellan DivePurpose och ParticipantPurpose
-        modelBuilder.Entity<ParticipantPurpose>()
-            .HasOne(pp => pp.DivePurpose)
-            .WithMany(dp => dp.ParticipantPurposes)
-            .HasForeignKey(pp => pp.DivePurposeId);
 
         //Samma person får inte finnas två gånger i samma dyk
         modelBuilder.Entity<DiveParticipant>()

@@ -21,42 +21,73 @@ namespace divelog.Controllers
             _context = context;
         }
 
+        private List<Person> SortPersons(List<Person> persons)
+        {
+            return persons
+                .OrderBy(p => string.IsNullOrEmpty(p.Signature) || char.IsDigit(p.Signature[0]))
+                .ThenBy(p => p.Signature)
+                .ToList();
+        }
+
         //Metod för att fylla dropdown-listor för dykpersonal
         //Används både vid GET och POST för samma logik
         private void PopulateDropdowns(CreateDiveViewModel vm)
         {
-            vm.DiveLeaders = _context.Persons
+            vm.Divers = SortPersons(_context.Persons
                 .Where(p => p.PersonRoles.Any(r => r.DiveRoleId == 1))
-                .ToList();
+                .ToList());
 
-            vm.Divers = _context.Persons
+            vm.DiveLeaders = SortPersons(_context.Persons
                 .Where(p => p.PersonRoles.Any(r => r.DiveRoleId == 2))
-                .ToList();
+                .ToList());
 
-            vm.SurfaceSupports = _context.Persons
+            vm.SurfaceSupports = SortPersons(_context.Persons
                 .Where(p => p.PersonRoles.Any(r => r.DiveRoleId == 3))
-                .ToList();
+                .ToList());
+
+            vm.DivePurposes = _context.DivePurposes.ToList();
         }
 
-        //Metod för att skapa ett grundobjekt för ett nytt dyk.
-        //Bra när flera dyk skapas samtidigt (Flera dykare med olika tider i samma formulär)
-        private Dive CreateBaseDive(CreateDiveViewModel vm)
+        //Dropdowns vid redigering av pardyk
+        private void PopulateBuddyEditDropdowns(EditBuddyDiveViewModel vm)
         {
-            return new Dive
-            {
-                Date = vm.Date,
-                LocationName = vm.LocationName,
-                Latitude = vm.Latitude,
-                Longitude = vm.Longitude,
-                Notes = vm.Notes,
-                DiveParticipants = new List<DiveParticipant>()
-            };
+            vm.AvailableDivers = SortPersons(_context.Persons
+                .Where(p => p.PersonRoles.Any(r => r.DiveRoleId == 1))
+                .ToList());
+
+            vm.DiveLeaders = SortPersons(_context.Persons
+                .Where(p => p.PersonRoles.Any(r => r.DiveRoleId == 2))
+                .ToList());
+
+            vm.DivePurposes = _context.DivePurposes.ToList();
+        }
+
+        //Dropdowns vid redigering av LFY dyk
+        private void PopulateSurfaceEditDropdowns(EditSurfaceSupportDiveViewModel vm)
+        {
+            vm.AvailableDivers = SortPersons(_context.Persons
+                .Where(p => p.PersonRoles.Any(r => r.DiveRoleId == 1))
+                .ToList());
+
+            vm.DiveLeaders = SortPersons(_context.Persons
+                .Where(p => p.PersonRoles.Any(r => r.DiveRoleId == 2))
+                .ToList());
+
+            vm.SurfaceSupports = SortPersons(_context.Persons
+                .Where(p => p.PersonRoles.Any(r => r.DiveRoleId == 3))
+                .ToList());
+
+            vm.DivePurposes = _context.DivePurposes.ToList();
         }
 
         // GET: Dive
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Dives.ToListAsync());
+            return View(await _context.Dives
+            .Include(d => d.DiveParticipants)
+            .ThenInclude(dp => dp.Person)
+            .Include(d => d.DivePurpose)
+            .ToListAsync());
         }
 
         // GET: Dive/Details/5
@@ -69,7 +100,13 @@ namespace divelog.Controllers
             }
 
             var dive = await _context.Dives
-                .FirstOrDefaultAsync(m => m.Id == id);
+            .Include(d => d.DiveParticipants)
+            .ThenInclude(dp => dp.Person)
+            .Include(d => d.DiveParticipants)
+            .ThenInclude(dp => dp.DiveRole)
+            .Include(d => d.DivePurpose)
+            .FirstOrDefaultAsync(m => m.Id == id);
+
             if (dive == null)
             {
                 return NotFound();
@@ -84,6 +121,8 @@ namespace divelog.Controllers
         {
             var vm = new CreateDiveViewModel
             {
+                Date = DateTime.Today,
+                StartTime = TimeSpan.FromMinutes(Math.Round(DateTime.Now.TimeOfDay.TotalMinutes / 5) * 5),
 
                 //Standard för pardyk, med två dykare
                 PairGroups = new List<PairGroupViewModel>
@@ -115,6 +154,8 @@ namespace divelog.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(CreateDiveViewModel vm)
         {
+            var divesToSave = new List<Dive>();
+
             //Ser till att listor aldrig blir null
             vm.PairGroups ??= new();
             vm.SurfaceSupportGroups ??= new();
@@ -123,91 +164,157 @@ namespace divelog.Controllers
                 g.Divers ??= new();
 
             //Kontrollerar att användare valt typ av dyk (pardyk, luft från ytan)
-            if (string.IsNullOrEmpty(vm.DiveType))
+            if (vm.DiveType <= 0)
             {
                 ModelState.AddModelError("", "Välj typ av dyk");
                 PopulateDropdowns(vm);
                 return View(vm);
             }
 
+            //Kontroll om angett datum är giltigt
+            if (vm.Date == default)
+                ModelState.AddModelError("", "Datum måste anges.");
+
+            //Kontroll av namn på dykplats
+            if (string.IsNullOrWhiteSpace(vm.LocationName))
+                ModelState.AddModelError("", "Plats måste anges.");
+
+            if (vm.LocationName?.Length >= 30)
+                ModelState.AddModelError("", "Platsnamn får vara max 30 tecken.");
+
+            //Kontroll av dykledare
+            if (vm.DiveLeaderId <= 0)
+                ModelState.AddModelError("", "Dykledare måste väljas.");
+
+            //Kontroll av dyktyp
+            if (vm.DiveType <= 0)
+                ModelState.AddModelError("", "Typ av dyk måste väljas.");
+
+            //FELHANTERING PARDYK
+            if (vm.DiveType == DiveType.Pardyk)
+            {
+                foreach (var pairGroup in vm.PairGroups)
+                {
+                    if (pairGroup.Divers.Count < 2)
+                    {
+                        ModelState.AddModelError("", "Minst två dykare krävs för pardyk.");
+                    }
+
+                    foreach (var diver in pairGroup.Divers)
+                    {
+                        if (!diver.DiverId.HasValue)
+                            ModelState.AddModelError("", "Alla dykare i pardyk måste väljas.");
+
+                        if (!diver.Depth.HasValue)
+                            ModelState.AddModelError("", "Alla dykare måste ha djup angivet.");
+
+                        if (!diver.DiveTime.HasValue)
+                            ModelState.AddModelError("", "Alla dykare måste ha dyktid angiven.");
+
+                        if (!diver.AirPressureBefore.HasValue)
+                            ModelState.AddModelError("", "Lufttryck före måste anges för alla dykare.");
+
+                        if (!diver.AirPressureAfter.HasValue)
+                            ModelState.AddModelError("", "Lufttryck efter måste anges för alla dykare.");
+                    }
+
+                    var ids = new List<int>();
+
+                    if (vm.DiveLeaderId.HasValue)
+                        ids.Add(vm.DiveLeaderId.Value);
+
+                    ids.AddRange(pairGroup.Divers
+                        .Where(d => d.DiverId.HasValue)
+                        .Select(d => d.DiverId.Value));
+
+                    if (ids.Count != ids.Distinct().Count())
+                    {
+                        ModelState.AddModelError("", "Samma person kan inte väljas flera gånger i samma pardyk.");
+                    }
+                }
+            }
+
+            //FELHANTERING LUFT FRÅN YTAN
+            if (vm.DiveType == DiveType.LuftFranYtan)
+            {
+                foreach (var group in vm.SurfaceSupportGroups)
+                {
+                    if (!group.DiverId.HasValue)
+                        ModelState.AddModelError("", "Dykare måste väljas.");
+
+                    if (!group.SurfaceSupportId.HasValue)
+                        ModelState.AddModelError("", "Dykskötare måste väljas.");
+
+                    if (!group.Depth.HasValue)
+                        ModelState.AddModelError("", "Djup måste anges.");
+
+                    if (!group.DiveTime.HasValue)
+                        ModelState.AddModelError("", "Dyktid måste anges.");
+
+                    var ids = new List<int>();
+
+                    if (vm.DiveLeaderId.HasValue)
+                        ids.Add(vm.DiveLeaderId.Value);
+
+                    if (group.DiverId.HasValue)
+                        ids.Add(group.DiverId.Value);
+
+                    if (group.SurfaceSupportId.HasValue)
+                        ids.Add(group.SurfaceSupportId.Value);
+
+                    if (ids.Count != ids.Distinct().Count())
+                    {
+                        ModelState.AddModelError("", "Samma person kan inte ha flera roller i samma dyk.");
+                    }
+                }
+            }
+
             //Om validering misslyckas skickas formuläret tillbaka med felmeddelanden
             if (!ModelState.IsValid)
             {
                 PopulateDropdowns(vm);
+
+                if (!vm.PairGroups.Any())
+                {
+                    vm.PairGroups.Add(new PairGroupViewModel
+                    {
+                        Divers = new List<PairDiverViewModel>
+                        {
+                            new PairDiverViewModel(),
+                            new PairDiverViewModel()
+                        }
+                    });
+                }
+
+                if (!vm.SurfaceSupportGroups.Any())
+                {
+                    vm.SurfaceSupportGroups.Add(new DiveGroupViewModel());
+                }
                 return View(vm);
             }
 
             //LOGIK FÖR PARDYK
-            if (vm.DiveType == "Pardyk")
+            if (vm.DiveType == DiveType.Pardyk)
             {
                 foreach (var pairGroup in vm.PairGroups)
                 {
-                    var dive = CreateBaseDive(vm);
-
-                    //Lägger till vald dykledare
-                    dive.DiveParticipants?.Add(new DiveParticipant
-                    {
-                        PersonId = vm.DiveLeaderId,
-                        DiveRoleId = 1
-                    });
-
-                    //Lägger till valda dykare
-                    foreach (var diver in pairGroup.Divers.Where(d => d.DiverId > 0))
-                    {
-                        dive.DiveParticipants?.Add(new DiveParticipant
-                        {
-                            PersonId = diver.DiverId,
-                            DiveRoleId = 2,
-                            Depth = diver.Depth,
-                            DiveTime = diver.DiveTime,
-                            AirPressureBefore = diver.AirPressureBefore,
-                            AirPressureAfter = diver.AirPressureAfter
-                        });
-                    }
-
-                    _context.Dives.Add(dive);
+                    divesToSave.Add(CreateDiveFromPairGroup(vm, pairGroup));
                 }
+
             }
             //LOGIK FÖR LYFT FRÅN YTAN
-            else if (vm.DiveType == "LuftFrånYtan")
+            else if (vm.DiveType == DiveType.LuftFranYtan)
             {
-                foreach (var group in vm.SurfaceSupportGroups.Where(g => g.DiverId > 0))
+
+                foreach (var group in vm.SurfaceSupportGroups.Where(g => g.DiverId.HasValue))
                 {
-                    var dive = CreateBaseDive(vm);
-
-                    //Lägger till vald dykledare
-                    dive.DiveParticipants?.Add(new DiveParticipant
-                    {
-                        PersonId = vm.DiveLeaderId,
-                        DiveRoleId = 1
-                    });
-
-                    //Lägger till vald dykare
-                    dive.DiveParticipants?.Add(new DiveParticipant
-                    {
-                        PersonId = group.DiverId,
-                        DiveRoleId = 2,
-                        Depth = group.Depth,
-                        DiveTime = group.DiveTime,
-                        AirPressureBefore = group.AirPressureBefore,
-                        AirPressureAfter = group.AirPressureAfter
-                    });
-
-                    //Lägger till dykskötare
-                    if (group.SurfaceSupportId.HasValue)
-                    {
-                        dive.DiveParticipants?.Add(new DiveParticipant
-                        {
-                            PersonId = group.SurfaceSupportId.Value,
-                            DiveRoleId = 3
-                        });
-                    }
-
-                    _context.Dives.Add(dive);
+                    divesToSave.Add(CreateDiveFromSurfaceGroup(vm, group));
                 }
+
             }
 
             //Sparar alla skapade dyk till databasen
+            _context.Dives.AddRange(divesToSave);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
@@ -220,63 +327,281 @@ namespace divelog.Controllers
                 return NotFound();
             }
 
-            var dive = await _context.Dives.FindAsync(id);
+            var dive = await _context.Dives
+            .Include(d => d.DiveParticipants)
+            .FirstOrDefaultAsync(d => d.Id == id);
+
             if (dive == null)
             {
                 return NotFound();
             }
-            return View(dive);
+
+            if (dive.DiveType == DiveType.Pardyk)
+            {
+                var vm = new EditBuddyDiveViewModel
+                {
+                    DiveId = dive.Id,
+                    Date = dive.Date,
+                    StartTime = dive.StartTime,
+                    LocationName = dive.LocationName,
+                    Latitude = dive.Latitude,
+                    Longitude = dive.Longitude,
+                    Notes = dive.Notes,
+                    DivePurposeId = dive.DivePurposeId,
+                    //Dykledare
+                    DiveLeaderId = dive.DiveParticipants
+                    .First(dp => dp.DiveRoleId == 2).PersonId,
+                    //Dykare
+                    Divers = dive.DiveParticipants
+                    .Where(dp => dp.DiveRoleId == 1)
+                    .Select(dp => new PairDiverViewModel
+                    {
+                        DiverId = dp.PersonId,
+                        Depth = dp.Depth,
+                        DiveTime = dp.DiveTime,
+                        AirPressureBefore = dp.AirPressureBefore,
+                        AirPressureAfter = dp.AirPressureAfter
+                    }).ToList()
+                };
+
+                PopulateBuddyEditDropdowns(vm);
+
+                return View("EditBuddyDive", vm);
+            }
+            else
+            {
+                var diver = dive.DiveParticipants.First(dp => dp.DiveRoleId == 1);
+                var support = dive.DiveParticipants.First(dp => dp.DiveRoleId == 3);
+
+                var vm = new EditSurfaceSupportDiveViewModel
+                {
+                    DiveId = dive.Id,
+                    Date = dive.Date,
+                    StartTime = dive.StartTime,
+                    LocationName = dive.LocationName,
+                    Latitude = dive.Latitude,
+                    Longitude = dive.Longitude,
+                    Notes = dive.Notes,
+                    DivePurposeId = dive.DivePurposeId,
+                    //Dykledare
+                    DiveLeaderId = dive.DiveParticipants
+                        .First(dp => dp.DiveRoleId == 2).PersonId,
+                    //Dykare
+                    DiverId = diver.PersonId,
+                    SurfaceSupportId = support.PersonId,
+                    Depth = diver.Depth,
+                    DiveTime = diver.DiveTime,
+                    AirPressureBefore = diver.AirPressureBefore,
+                    AirPressureAfter = diver.AirPressureAfter
+                };
+
+                PopulateSurfaceEditDropdowns(vm);
+
+                return View("EditSurfaceSupportDive", vm);
+            }
         }
 
         // POST: Dive/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        //REDIGERA PARDYK
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Date,StartTime,LocationName,Latitude,Longitude,Notes")] Dive dive)
+        public async Task<IActionResult> EditBuddyDive(EditBuddyDiveViewModel vm)
         {
-            if (id != dive.Id)
+            var dive = await _context.Dives
+                .Include(d => d.DiveParticipants)
+                .FirstOrDefaultAsync(d => d.Id == vm.DiveId);
+
+            if (dive == null) return NotFound();
+
+            //VALIDERING
+            if (vm.DiveLeaderId <= 0)
+                ModelState.AddModelError("", "Dykledare måste väljas.");
+
+            if (string.IsNullOrWhiteSpace(vm.LocationName))
+                ModelState.AddModelError("", "Plats måste anges.");
+
+            if (vm.Date == default)
+                ModelState.AddModelError("", "Datum måste anges.");
+
+            if (vm.StartTime == default)
+                ModelState.AddModelError("", "Starttid måste anges.");
+
+            if (vm.Divers == null || vm.Divers.Count < 2)
+                ModelState.AddModelError("", "Minst två dykare krävs.");
+
+            var ids = new List<int>();
+
+            if (vm.DiveLeaderId.HasValue)
+                ids.Add(vm.DiveLeaderId.Value);
+
+            foreach (var d in vm.Divers ?? new())
             {
-                return NotFound();
+                if (!d.DiverId.HasValue)
+                    ModelState.AddModelError("", "Alla dykare måste väljas.");
+
+                if (!d.Depth.HasValue || d.Depth < 1)
+                    ModelState.AddModelError("", "Djup måste anges.");
+
+                if (!d.DiveTime.HasValue || d.DiveTime < 1)
+                    ModelState.AddModelError("", "Dyktid måste anges.");
+
+                if (!d.AirPressureBefore.HasValue)
+                    ModelState.AddModelError("", "Luft före måste anges.");
+
+                if (!d.AirPressureAfter.HasValue)
+                    ModelState.AddModelError("", "Luft efter måste anges.");
+
+                if (d.DiverId.HasValue)
+                    ids.Add(d.DiverId.Value);
             }
 
-            if (ModelState.IsValid)
+            if (ids.Count != ids.Distinct().Count())
+                ModelState.AddModelError("", "Samma person kan inte ha flera roller i samma dyk.");
+
+            if (!ModelState.IsValid)
             {
-                try
-                {
-                    _context.Update(dive);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!DiveExists(dive.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
+                PopulateBuddyEditDropdowns(vm);
+                return View("EditBuddyDive", vm);
             }
-            return View(dive);
+
+            //UPPDATERING
+            // Uppdaterar basic info
+            dive.Date = vm.Date;
+            dive.StartTime = vm.StartTime;
+            dive.LocationName = vm.LocationName;
+            dive.Latitude = vm.Latitude;
+            dive.Longitude = vm.Longitude;
+            dive.Notes = vm.Notes;
+            dive.DivePurposeId = vm.DivePurposeId;
+
+            // Tar bort gamla participants
+            _context.DiveParticipants.RemoveRange(dive.DiveParticipants);
+
+            // Lägger till ny dykledare
+            dive.DiveParticipants.Add(new DiveParticipant
+            {
+                PersonId = vm.DiveLeaderId!.Value,
+                DiveRoleId = 2
+            });
+
+            // Lägger till dykare
+            foreach (var diver in vm.Divers)
+            {
+                var exposureTime = CalculateExposureTime(diver.Depth!.Value, diver.DiveTime!.Value);
+
+                dive.DiveParticipants.Add(new DiveParticipant
+                {
+                    PersonId = diver.DiverId!.Value,
+                    DiveRoleId = 1,
+                    Depth = diver.Depth,
+                    ExposureTime = exposureTime,
+                    DiveTime = diver.DiveTime,
+                    AirPressureBefore = diver.AirPressureBefore,
+                    AirPressureAfter = diver.AirPressureAfter
+                });
+            }
+
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
+        }
+
+        //REDIGERA LUFT FRÅN YTAN
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditSurfaceSupportDive(EditSurfaceSupportDiveViewModel vm)
+        {
+            var dive = await _context.Dives
+                .Include(d => d.DiveParticipants)
+                .FirstOrDefaultAsync(d => d.Id == vm.DiveId);
+
+            if (dive == null) return NotFound();
+
+            // VALIDERING
+            if (vm.DiveLeaderId <= 0)
+                ModelState.AddModelError("", "Dykledare måste väljas.");
+
+            if (!vm.DiverId.HasValue)
+                ModelState.AddModelError("", "Dykare måste väljas.");
+
+            if (!vm.SurfaceSupportId.HasValue)
+                ModelState.AddModelError("", "Dykskötare måste väljas.");
+
+            if (!vm.Depth.HasValue || vm.Depth < 1)
+                ModelState.AddModelError("", "Djup måste anges.");
+
+            if (!vm.DiveTime.HasValue || vm.DiveTime < 1)
+                ModelState.AddModelError("", "Dyktid måste anges.");
+
+            var ids = new List<int>();
+
+            if (vm.DiveLeaderId.HasValue)
+                ids.Add(vm.DiveLeaderId.Value);
+
+            if (vm.DiverId.HasValue)
+                ids.Add(vm.DiverId.Value);
+
+            if (vm.SurfaceSupportId.HasValue)
+                ids.Add(vm.SurfaceSupportId.Value);
+
+            if (ids.Count != ids.Distinct().Count())
+                ModelState.AddModelError("", "Samma person kan inte ha flera roller i samma dyk.");
+
+            if (!ModelState.IsValid)
+            {
+                PopulateSurfaceEditDropdowns(vm);
+                return View("EditSurfaceSupportDive", vm);
+            }
+
+            //UPPDATERING
+            //Uppdaterar basic info
+            dive.Date = vm.Date;
+            dive.StartTime = vm.StartTime;
+            dive.LocationName = vm.LocationName;
+            dive.Latitude = vm.Latitude;
+            dive.Longitude = vm.Longitude;
+            dive.Notes = vm.Notes;
+            dive.DivePurposeId = vm.DivePurposeId;
+
+            // Tar bort gamla participants
+            _context.DiveParticipants.RemoveRange(dive.DiveParticipants);
+
+            dive.DiveParticipants.Add(new DiveParticipant
+            {
+                PersonId = vm.DiveLeaderId!.Value,
+                DiveRoleId = 2
+            });
+
+            var exposureTime = CalculateExposureTime(vm.Depth!.Value, vm.DiveTime!.Value);
+
+            dive.DiveParticipants.Add(new DiveParticipant
+            {
+                PersonId = vm.DiverId!.Value,
+                DiveRoleId = 1,
+                Depth = vm.Depth,
+                ExposureTime = exposureTime,
+                DiveTime = vm.DiveTime,
+                AirPressureBefore = vm.AirPressureBefore,
+                AirPressureAfter = vm.AirPressureAfter
+            });
+
+            dive.DiveParticipants.Add(new DiveParticipant
+            {
+                PersonId = vm.SurfaceSupportId!.Value,
+                DiveRoleId = 3
+            });
+
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: Dive/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return NotFound();
 
-            var dive = await _context.Dives
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (dive == null)
-            {
-                return NotFound();
-            }
+            var dive = await _context.Dives.FirstOrDefaultAsync(m => m.Id == id);
+
+            if (dive == null) return NotFound();
 
             return View(dive);
         }
@@ -287,10 +612,9 @@ namespace divelog.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var dive = await _context.Dives.FindAsync(id);
+
             if (dive != null)
-            {
                 _context.Dives.Remove(dive);
-            }
 
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
@@ -299,6 +623,104 @@ namespace divelog.Controllers
         private bool DiveExists(int id)
         {
             return _context.Dives.Any(e => e.Id == id);
+        }
+
+        //Metod för att skapa ett grundobjekt för ett nytt dyk.
+        //Bra när flera dyk skapas samtidigt (Flera dykare med olika tider i samma formulär)
+        private Dive CreateBaseDive(CreateDiveViewModel vm)
+        {
+            return new Dive
+            {
+                Date = vm.Date.Date,
+                StartTime = vm.StartTime,
+                LocationName = vm.LocationName,
+                Latitude = vm.Latitude,
+                Longitude = vm.Longitude,
+                Notes = vm.Notes,
+                DiveType = vm.DiveType,
+                DivePurposeId = vm.DivePurposeId,
+                DiveParticipants = new List<DiveParticipant>()
+            };
+        }
+
+        //SKAPA DYKDATA FÖR PARDYK
+        private Dive CreateDiveFromPairGroup(CreateDiveViewModel vm, PairGroupViewModel pairGroup)
+        {
+            var dive = CreateBaseDive(vm);
+
+            //Lägger till vald dykledare
+            dive.DiveParticipants?.Add(new DiveParticipant
+            {
+                PersonId = vm.DiveLeaderId!.Value,
+                DiveRoleId = 2
+            });
+
+            //Lägger till valda dykare
+            foreach (var diver in pairGroup.Divers.Where(d => d.DiverId.HasValue))
+            {
+                var exposureTime = CalculateExposureTime(diver.Depth!.Value, diver.DiveTime!.Value);
+
+                dive.DiveParticipants?.Add(new DiveParticipant
+                {
+                    PersonId = diver.DiverId!.Value,
+                    DiveRoleId = 1,
+                    Depth = diver.Depth,
+                    ExposureTime = exposureTime,
+                    DiveTime = diver.DiveTime,
+                    AirPressureBefore = diver.AirPressureBefore,
+                    AirPressureAfter = diver.AirPressureAfter,
+
+                });
+            }
+
+            return dive;
+        }
+
+        //SKAPA DYKDATA FÖR LUFT FRÅN UTAN
+        private Dive CreateDiveFromSurfaceGroup(CreateDiveViewModel vm, DiveGroupViewModel group)
+        {
+            var dive = CreateBaseDive(vm);
+
+            //Lägger till vald dykledare
+            dive.DiveParticipants?.Add(new DiveParticipant
+            {
+                PersonId = vm.DiveLeaderId!.Value,
+                DiveRoleId = 2
+            });
+
+            var exposureTime = CalculateExposureTime(group.Depth!.Value, group.DiveTime!.Value);
+
+            //Lägger till vald dykare
+            dive.DiveParticipants?.Add(new DiveParticipant
+            {
+                PersonId = group.DiverId!.Value,
+                DiveRoleId = 1,
+                Depth = group.Depth,
+                ExposureTime = exposureTime,
+                DiveTime = group.DiveTime,
+                AirPressureBefore = group.AirPressureBefore,
+                AirPressureAfter = group.AirPressureAfter,
+
+            });
+
+
+            //Lägger till dykskötare
+            if (group.SurfaceSupportId.HasValue)
+            {
+                dive.DiveParticipants?.Add(new DiveParticipant
+                {
+                    PersonId = group.SurfaceSupportId.Value,
+                    DiveRoleId = 3
+                });
+            }
+
+            return dive;
+        }
+
+        private int CalculateExposureTime(double depth, int diveTime)
+        {
+            var extraMinutes = (int)Math.Ceiling(depth / 9.0);
+            return diveTime - extraMinutes;
         }
     }
 }

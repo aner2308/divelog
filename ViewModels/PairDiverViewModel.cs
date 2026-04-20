@@ -2,7 +2,7 @@ namespace divelog.ViewModels;
 
 public class PairDiverViewModel
 {
-    public int DiverId { get; set; }
+    public int? DiverId { get; set; }
 
     public double? Depth { get; set; }
 
@@ -11,4 +11,6 @@ public class PairDiverViewModel
     public int? AirPressureBefore { get; set; }
 
     public int? AirPressureAfter { get; set; }
+
+    public List<int> PurposeIds { get; set; } = new();
 }

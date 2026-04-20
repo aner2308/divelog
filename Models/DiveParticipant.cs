@@ -22,7 +22,4 @@ public class DiveParticipant
     public Person Person { get; set; } = null!;
     //Navigation till roll
     public DiveRole DiveRole { get; set; } = null!;
-
-    //Lista med syften som kopplas till deltagaren
-    public ICollection<ParticipantPurpose>? ParticipantPurposes { get; set; } = new List<ParticipantPurpose>();
 }

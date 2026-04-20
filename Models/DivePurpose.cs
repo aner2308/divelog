@@ -6,6 +6,4 @@ public class DivePurpose
     
     public string? Name { get; set; }
 
-    //Lista som innehåller kopplingar mellan syften och deltagare
-    public ICollection<ParticipantPurpose>? ParticipantPurposes { get; set; }
 }
