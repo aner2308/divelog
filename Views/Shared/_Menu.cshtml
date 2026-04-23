@@ -1,0 +1,36 @@
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<IdentityUser> SignInManager
+@inject UserManager<IdentityUser> UserManager
+
+@{
+    var currentController = ViewContext.RouteData.Values["controller"]?.ToString();
+}
+
+<nav class="main-nav">
+
+    <button class="menu-toggle" id="menuToggle">
+        ☰
+    </button>
+
+    <ul class="nav-list" id="navList">
+
+        <li><a asp-controller="Home" asp-action="Index">Start</a></li>
+        <li><a asp-controller="Dive" asp-action="Create">Nytt dyk</a></li>
+        <li><a asp-controller="Dive" asp-action="Index">Dyklogg</a></li>
+        <li><a asp-controller="Person" asp-action="Index">Personal</a></li>
+        <li><a asp-controller="Home" asp-action="About">Om oss</a></li>
+        @if (User.Identity?.IsAuthenticated ?? false)
+        {
+            <li>
+                <form class="logout-form" asp-area="Identity" asp-page="/Account/Logout" method="post">
+                    <button type="submit" class="nav-link btn btn-link" style="padding:0;">Logga ut</button>
+                </form>
+            </li>
+        }
+        else
+        {
+            <li><a asp-area="Identity" asp-page="/Account/Login">Logga in</a></li>
+        }
+    </ul>
+
+</nav>

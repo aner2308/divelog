@@ -1,4 +1,19 @@
-﻿// Please see documentation at https://learn.microsoft.com/aspnet/core/client-side/bundling-and-minification
-// for details on configuring this project to bundle and minify static web assets.
+﻿document.addEventListener("DOMContentLoaded", function () {
 
-// Write your JavaScript code.
+    const toggleBtn = document.getElementById("menuToggle");
+    const navList = document.getElementById("navList");
+
+    toggleBtn.addEventListener("click", function () {
+
+        navList.classList.toggle("active");
+
+        //Byt ikon
+        if (navList.classList.contains("active")) {
+            toggleBtn.textContent = "✖";
+        } else {
+            toggleBtn.textContent = "☰";
+        }
+
+    });
+
+});

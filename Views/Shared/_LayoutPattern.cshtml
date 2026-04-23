@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="sv">
 
 <head>
@@ -12,11 +12,10 @@
         <link rel="icon" type="image/png" sizes="192x192" href="~/images/faviconL.png">
             <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
             <link rel="stylesheet" href="~/css/dive.css" asp-append-version="true" />
-            <link rel="stylesheet" href="~/css/auth.css" asp-append-version="true" />
             <link rel="stylesheet" href="~/css/person.css" asp-append-version="true" />
+            <link rel="stylesheet" href="~/css/layoutPattern.css" asp-append-version="true" />
+            <link rel="stylesheet" href="~/css/about.css" asp-append-version="true" />
             <link rel="stylesheet" href="~/divelog.styles.css" asp-append-version="true" />
-
-            @RenderSection("LayoutStyles", required: false)
         </head>
 
         <body>
@@ -25,26 +24,28 @@
                 <a asp-controller="Home" asp-action="Index" class="logo-link">
                     <img src="/images/faviconL.png" alt="Logo" class="logo-Top-Left">
                 </a>
+                
+                <div class="bg-pattern"></div>
 
-                <div class="main-content">
-                    <header>
+                <div class="page-content">
+                    <header class="hero-header">
                         @await Html.PartialAsync("_Menu")
                     </header>
 
-                    <main>
-                        @RenderBody()
-                    </main>
-                </div>
-                <footer>
-                    <div>
-                        <p>&copy; 2026 - Divelog</p>
+                    <div class="main-content">
+                        <main>
+                            @RenderBody()
+                        </main>
                     </div>
-                </footer>
+
+                    <footer>
+                        <p>&copy; 2026 - Divelog</p>
+                    </footer>
+                </div>
+
             </div>
 
             <script src="~/lib/jquery/dist/jquery.min.js"></script>
             <script src="~/js/site.js" asp-append-version="true"></script>
             @await RenderSectionAsync("Scripts", required: false)
         </body>
-
-    </html>
