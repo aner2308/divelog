@@ -1,0 +1,61 @@
+.hero-wrapper {
+    position: relative;
+    height: 70vh;
+    overflow: hidden;
+}
+
+.hero-background {
+    position: absolute;
+    inset: 0;
+    background-image: linear-gradient(to bottom,
+            #27374d00,
+            #27374d48,
+            #27374D), url('/images/hero.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    transform: scale(1.01);
+    z-index: 0;
+}
+
+.hero-background::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgba(39, 55, 77, 0.35);
+}
+
+.hero-header {
+    position: relative;
+    z-index: 3;
+}
+
+.hero-content {
+    position: relative;
+    color: white;
+    text-align: center;
+    top: 60%;
+    transform: translateY(-50%);
+}
+
+.loginButton {
+    display: inline-block;
+    text-decoration: none;
+    padding: 1rem 2rem;
+    font-size: 2rem;
+    background-color: #526D82;
+    border-style: none;
+    border-radius: 0 !important;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+    margin-top: 2rem;
+}
+
+.loginButton a {
+    text-decoration: none;
+    color: white;
+}
+
+.loginButton:hover {
+    transform: scale(1.05);
+}

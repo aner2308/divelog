@@ -1,6 +1,11 @@
 @model IEnumerable<divelog.Models.Dive>
 
-<h2>Dyklogg</h2>
+@{
+    ViewData["Title"] = "Index";
+    Layout = "_LayoutPattern";
+}
+
+<h1>Index</h1>
 
 <p>
     <a asp-action="Create" class="btn btn-primary">Nytt dyk</a>

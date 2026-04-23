@@ -1,31 +1,196 @@
-html {
-  font-size: 14px;
+*,
+*::before,
+*::after {
+  /*Gör så att padding och border räknas in i bredden*/
+  box-sizing: border-box;
 }
 
-@media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
-}
-
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+* {
+  margin: 0;
+  padding: 0;
 }
 
 html {
-  position: relative;
-  min-height: 100%;
+  font-family: "Jura", sans-serif;
+  /*62,5% av 16px ger 10px*/
+  font-size: 62.5%;
 }
 
 body {
-  margin-bottom: 60px;
+  background: linear-gradient(90deg, #9DB2BF, #27374d, #9DB2BF);
+  min-height: 100vh;
+  line-height: 1.5;
+  /*Textstorlek 16px som standard*/
+  font-size: 1.6rem;
+  color: white;
 }
 
-.form-floating > .form-control-plaintext::placeholder, .form-floating > .form-control::placeholder {
-  color: var(--bs-secondary-color);
-  text-align: end;
+h1 {
+  /*Textstorlek 32px som standard*/
+  font-size: 3.2rem;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  text-align: center;
 }
 
-.form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
-  text-align: start;
+h2 {
+  /*Textstorlek 24 som standard*/
+  font-size: 2.4rem;
+  margin-bottom: 1rem;
+}
+
+h3 {
+  /*Textstorlek 20 som standard*/
+  font-size: 2.0rem;
+  margin-bottom: 1rem;
+}
+
+h4 {
+  /*Textstorlek 16 som standard*/
+  font-size: 1.6rem;
+  margin-bottom: 1rem;
+}
+
+/*Element i formulär ärver font från body */
+input,
+button,
+textarea,
+select {
+  font: inherit;
+}
+
+.page-wrapper {
+  background-color: #27374D;
+  min-height: 100vh;
+  max-width: 1920px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.main-content {
+  flex: 1;
+}
+
+.logo-link img {
+  cursor: pointer;
+}
+
+.logo-Top-Left {
+  position: absolute;
+  height: 70px;
+  width: 70px;
+  top: 10px;
+  left: 0;
+  z-index: 9000;
+}
+
+.main-nav {
+  background: linear-gradient(180deg, #27374D, #27374dbe, #27374d00);
+  padding: 1rem 0 7rem 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  z-index: 3;
+
+}
+
+.nav-list {
+  list-style: none;
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  margin: 0;
+  padding: 0;
+  transition: all 0.3s ease;
+}
+
+.nav-list li a {
+  text-decoration: none;
+  color: white;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  transition: 0.2s ease;
+}
+
+.nav-list li a:hover {
+  text-decoration: underline
+}
+
+.menu-toggle {
+  display: none;
+  position: absolute;
+  right: 1.5rem;
+  top: 3rem;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: white;
+  font-size: 4rem;
+  cursor: pointer;
+}
+
+footer {
+  background: linear-gradient(180deg, #27374d00, #27374dbf, #27374D);
+  padding: 7rem 0 3rem 0;
+  color: white;
+  text-align: center;
+  width: 100%;
+  max-width: 1920px;
+}
+
+@media (max-width: 768px) {
+
+  .main-nav {
+    background: linear-gradient(180deg, #27374D, #27374dbe, #27374d00);
+    padding: 1rem 0 7rem 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1002;
+  }
+
+  main {
+    margin: 0 !important;
+    padding: 8rem 1rem 0rem 1rem !important;
+  }
+
+  .menu-toggle {
+    display: block;
+    z-index: 2000;
+  }
+
+  .nav-list {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 50%;
+    height: 100vh;
+    background: #27374D;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 2rem;
+    transform: translateX(100%);
+    transition: transform 0.3s ease;
+    z-index: 1000;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.25);
+  }
+
+  .nav-list.active {
+    transform: translateX(0);
+  }
+}
+
+@media (max-width: 500px) {
+
+  .nav-list {
+    width: 80%;
+  }
+
 }
