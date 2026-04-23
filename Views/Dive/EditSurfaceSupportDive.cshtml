@@ -24,6 +24,16 @@
     </div>
 
     <div class="mb-3">
+        <label>Typ av dyk</label>
+        <select asp-for="DivePurposeId" class="form-control">
+            @foreach (var purpose in Model.DivePurposes)
+            {
+                <option value="@purpose.Id">@purpose.Name</option>
+            }
+        </select>
+    </div>
+
+    <div class="mb-3">
         <label>Latitud</label>
         <input asp-for="Latitude" class="form-control" />
     </div>

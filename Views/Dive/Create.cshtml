@@ -6,6 +6,12 @@
 
 <h2>Registrera dyk</h2>
 
+<!-- FLIKAR -->
+    <div class="mb-3">
+        <button type="button" onclick="showSurfaceSupport()">Dykare + Dykskötare</button>
+        <button type="button" onclick="showBuddyDive()">Pardyk</button>
+    </div>
+
 <form asp-action="Create" method="post">
 
     <div asp-validation-summary="All" class="text-danger"></div>
@@ -64,12 +70,6 @@
     </div>
 
     <input type="hidden" asp-for="DiveType" id="DiveType" />
-
-    <!-- FLIKAR -->
-    <div class="mb-3">
-        <button type="button" onclick="showSurfaceSupport()">Dykare + Dykskötare</button>
-        <button type="button" onclick="showBuddyDive()">Pardyk</button>
-    </div>
 
     <!-- PARDYK -->
     <div id="buddyDiveSection" style="display:none;">
