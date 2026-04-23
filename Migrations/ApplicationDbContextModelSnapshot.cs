@@ -222,6 +222,12 @@ namespace divelog.Migrations
                     b.Property<DateTime>("Date")
                         .HasColumnType("TEXT");
 
+                    b.Property<int?>("DivePurposeId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("DiveType")
+                        .HasColumnType("INTEGER");
+
                     b.Property<double>("Latitude")
                         .HasColumnType("REAL");
 
@@ -237,12 +243,14 @@ namespace divelog.Migrations
                     b.Property<int?>("PersonId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<DateTime>("StartTime")
+                    b.Property<TimeSpan>("StartTime")
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 
                     b.HasIndex("Date");
+
+                    b.HasIndex("DivePurposeId");
 
                     b.HasIndex("PersonId");
 
@@ -405,27 +413,6 @@ namespace divelog.Migrations
                         });
                 });
 
-            modelBuilder.Entity("divelog.Models.ParticipantPurpose", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("DiveParticipantId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("DivePurposeId")
-                        .HasColumnType("INTEGER");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("DiveParticipantId");
-
-                    b.HasIndex("DivePurposeId");
-
-                    b.ToTable("ParticipantPurposes");
-                });
-
             modelBuilder.Entity("divelog.Models.Person", b =>
                 {
                     b.Property<int>("Id")
@@ -534,9 +521,15 @@ namespace divelog.Migrations
 
             modelBuilder.Entity("divelog.Models.Dive", b =>
                 {
+                    b.HasOne("divelog.Models.DivePurpose", "DivePurpose")
+                        .WithMany()
+                        .HasForeignKey("DivePurposeId");
+
                     b.HasOne("divelog.Models.Person", null)
                         .WithMany("LedDives")
                         .HasForeignKey("PersonId");
+
+                    b.Navigation("DivePurpose");
                 });
 
             modelBuilder.Entity("divelog.Models.DiveParticipant", b =>
@@ -564,25 +557,6 @@ namespace divelog.Migrations
                     b.Navigation("DiveRole");
 
                     b.Navigation("Person");
-                });
-
-            modelBuilder.Entity("divelog.Models.ParticipantPurpose", b =>
-                {
-                    b.HasOne("divelog.Models.DiveParticipant", "DiveParticipant")
-                        .WithMany("ParticipantPurposes")
-                        .HasForeignKey("DiveParticipantId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("divelog.Models.DivePurpose", "DivePurpose")
-                        .WithMany("ParticipantPurposes")
-                        .HasForeignKey("DivePurposeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("DiveParticipant");
-
-                    b.Navigation("DivePurpose");
                 });
 
             modelBuilder.Entity("divelog.Models.Person", b =>
@@ -618,16 +592,6 @@ namespace divelog.Migrations
             modelBuilder.Entity("divelog.Models.Dive", b =>
                 {
                     b.Navigation("DiveParticipants");
-                });
-
-            modelBuilder.Entity("divelog.Models.DiveParticipant", b =>
-                {
-                    b.Navigation("ParticipantPurposes");
-                });
-
-            modelBuilder.Entity("divelog.Models.DivePurpose", b =>
-                {
-                    b.Navigation("ParticipantPurposes");
                 });
 
             modelBuilder.Entity("divelog.Models.DiveRole", b =>

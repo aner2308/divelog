@@ -1,0 +1,94 @@
+@model divelog.ViewModels.EditSurfaceSupportDiveViewModel
+
+<h2>Redigera dyk (luft från ytan)</h2>
+
+<form asp-action="EditSurfaceSupportDive">
+
+    <input type="hidden" asp-for="DiveId" />
+
+    <div asp-validation-summary="All" class="text-danger"></div>
+
+    <div class="mb-3">
+        <label asp-for="Date">Datum</label>
+        <input asp-for="Date" type="date" class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="StartTime">Starttid</label>
+        <input asp-for="StartTime" type="time" class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label>Plats</label>
+        <input asp-for="LocationName" class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label>Typ av dyk</label>
+        <select asp-for="DivePurposeId" class="form-control">
+            @foreach (var purpose in Model.DivePurposes)
+            {
+                <option value="@purpose.Id">@purpose.Name</option>
+            }
+        </select>
+    </div>
+
+    <div class="mb-3">
+        <label>Latitud</label>
+        <input asp-for="Latitude" class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label>Longitud</label>
+        <input asp-for="Longitude" class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label>Anteckningar</label>
+        <textarea asp-for="Notes" class="form-control"></textarea>
+    </div>
+
+    <div class="mb-3">
+        <label>Dykledare</label>
+        <select asp-for="DiveLeaderId" class="form-control">
+            @foreach (var p in Model.DiveLeaders)
+            {
+                <option value="@p.Id">@p.Signature @p.Name</option>
+            }
+        </select>
+    </div>
+
+    <div class="mb-3">
+        <label>Dykare</label>
+        <select asp-for="DiverId" class="form-control">
+            @foreach (var p in Model.AvailableDivers)
+            {
+                <option value="@p.Id">@p.Signature @p.Name</option>
+            }
+        </select>
+    </div>
+
+    <div class="mb-3">
+        <label>Dykskötare</label>
+        <select asp-for="SurfaceSupportId" class="form-control">
+            @foreach (var p in Model.SurfaceSupports)
+            {
+                <option value="@p.Id">@p.Signature @p.Name</option>
+            }
+        </select>
+    </div>
+
+    <label>Djup</label>
+    <input asp-for="Depth" class="form-control" />
+
+    <label>Dyktid</label>
+    <input asp-for="DiveTime" class="form-control" />
+
+    <label>Luft före</label>
+    <input asp-for="AirPressureBefore" class="form-control" />
+
+    <label>Luft efter</label>
+    <input asp-for="AirPressureAfter" class="form-control" />
+
+    <button type="submit" class="btn btn-primary">Spara</button>
+</form>
