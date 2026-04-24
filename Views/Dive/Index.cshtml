@@ -5,83 +5,95 @@
     Layout = "_LayoutPattern";
 }
 
-<h1>Index</h1>
+<h1>Dyklogg</h1>
 
-<p>
-    <a asp-action="Create" class="btn btn-primary">Nytt dyk</a>
-</p>
+<div class="page-container">
+    <div class="table-tools">
+        <a asp-action="Create" class="table-btn add-btn">Nytt dyk</a>
+    </div>
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>Datum</th>
-            <th>Plats</th>
-            <th>Dykledare</th>
-            <th>Dykare</th>
-            <th>Dykskötare</th>
-            <th>Syfte</th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
+    <div class="table-container">
+        <table class="dive-table">
+            <thead>
+                <tr>
+                    <th>Datum</th>
+                    <th>Plats</th>
+                    <th>Dykledare</th>
+                    <th>Dykare</th>
+                    <th>Dykskötare</th>
+                    <th>Syfte</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
 
-@foreach (var dive in Model)
-{
-    var diveLeader = dive.DiveParticipants?
-        .FirstOrDefault(p => p.DiveRoleId == 2)?.Person;
-
-    var divers = dive.DiveParticipants?
-        .Where(p => p.DiveRoleId == 1)
-        .Select(p => p.Person)
-        .ToList();
-
-    var diveSupport = dive.DiveParticipants?
-        .FirstOrDefault(p => p.DiveRoleId == 3)?.Person;
-
-    <tr>
-        <td>
-            @dive.Date.ToString("yyyy-MM-dd")
-        </td>
-
-        <td>
-            @dive.LocationName
-        </td>
-
-        <td>
-            @if (diveLeader != null)
-            {
-                @($"{diveLeader.Signature} - ")<i>@($"{diveLeader.Name}")</i>
-            }
-        </td>
-
-        <td>
-            @if (divers != null)
-            {
-                foreach (var d in divers)
+                @foreach (var dive in Model)
                 {
-                    <div>@($"{d.Signature} - ")<i>@($"{d.Name}")</i></div>
+                    var diveLeader = dive.DiveParticipants?
+                        .FirstOrDefault(p => p.DiveRoleId == 2)?.Person;
+
+                    var divers = dive.DiveParticipants?
+                        .Where(p => p.DiveRoleId == 1)
+                        .Select(p => p.Person)
+                        .ToList();
+
+                    var diveSupport = dive.DiveParticipants?
+                        .FirstOrDefault(p => p.DiveRoleId == 3)?.Person;
+
+                    <tr>
+                        <td>
+                            @dive.Date.ToString("yyyy-MM-dd")
+                        </td>
+
+                        <td>
+                            @dive.LocationName
+                        </td>
+
+                        <td>
+                            @if (diveLeader != null)
+                            {
+                                @($"{diveLeader.Signature} - ")
+                                <i>@($"{diveLeader.Name}")</i>
+                            }
+                        </td>
+
+                        <td>
+                            @if (divers != null)
+                            {
+                                foreach (var d in divers)
+                                {
+                                    <div>@($"{d.Signature} - ")<i>@($"{d.Name}")</i></div>
+                                }
+                            }
+                        </td>
+
+                        <td>
+                            @if (diveSupport != null)
+                            {
+                                @($"{diveSupport.Signature} - ")
+                                <i>@($"{diveSupport.Name}")</i>
+                            }
+                        </td>
+
+                        <td>
+                            @dive.DivePurpose?.Name
+                        </td>
+
+                        <td>
+                            <div class="button-wrapper">
+                                <a asp-action="Edit" asp-route-id="@dive.Id" class="table-btn">Redigera</a>
+                                <a asp-action="Details" asp-route-id="@dive.Id" class="table-btn">Detaljer</a>
+                                <a asp-action="Delete" asp-route-id="@dive.Id" class="table-btn">Radera</a>
+                            </div>
+                        </td>
+                    </tr>
                 }
-            }
-        </td>
 
-        <td>
-            @if (diveSupport != null)
-            {
-                @($"{diveSupport.Signature} - ")<i>@($"{diveSupport.Name}")</i>
-            }
-        </td>
+            </tbody>
+        </table>
+    </div>
+</div>
 
-        <td>
-            @dive.DivePurpose?.Name
-        </td>
-
-        <td>
-            <a asp-action="Edit" asp-route-id="@dive.Id">Redigera</a> |
-            <a asp-action="Details" asp-route-id="@dive.Id">Detaljer</a> |
-            <a asp-action="Delete" asp-route-id="@dive.Id">Radera</a>
-        </td>
-    </tr>
-}
-
-    </tbody>
-</table>
+<div class="map-padding">
+    <div id="big-map"></div>
+</div>
