@@ -11,8 +11,8 @@ using divelog.Data;
 namespace divelog.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260420094233_updatedTimeStamps")]
-    partial class updatedTimeStamps
+    [Migration("20260423080343_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

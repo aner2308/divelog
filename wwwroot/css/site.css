@@ -36,18 +36,22 @@ h1 {
 h2 {
   /*Textstorlek 24 som standard*/
   font-size: 2.4rem;
+  margin-top: 1rem;
   margin-bottom: 1rem;
+  text-align: center;
 }
 
 h3 {
   /*Textstorlek 20 som standard*/
   font-size: 2.0rem;
+  margin-top: 1rem;
   margin-bottom: 1rem;
 }
 
 h4 {
   /*Textstorlek 16 som standard*/
   font-size: 1.6rem;
+  margin-top: 1rem;
   margin-bottom: 1rem;
 }
 

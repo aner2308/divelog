@@ -92,15 +92,15 @@ namespace divelog.Controllers
             bool isDiver = vm.SelectedRoleIds.Contains(diverRoleId);
 
             //Felhantering
-            //Kontrollera korrekt ifyllt fält för namn
-            if (string.IsNullOrWhiteSpace(vm.Name))
-            {
-                ModelState.AddModelError("Name", "Namn måste anges");
-            }
             //Kontrollera korrekt ifyllt fält för signatur
             if (string.IsNullOrWhiteSpace(vm.Signature))
             {
                 ModelState.AddModelError("Signature", "Signatur måste anges");
+            }
+            //Kontrollera korrekt ifyllt fält för namn
+            if (string.IsNullOrWhiteSpace(vm.Name))
+            {
+                ModelState.AddModelError("Name", "Namn måste anges");
             }
             //Kontrollera att StartedDiving är ifyllt om personen är dykare
             if (isDiver && vm.StartedDiving == null)
@@ -206,15 +206,15 @@ namespace divelog.Controllers
             bool isDiver = vm.SelectedRoleIds.Contains(diverRoleId);
 
             //Felhantering
-            //Kontrollera korrekt ifyllt fält för namn
-            if (string.IsNullOrWhiteSpace(vm.Name))
-            {
-                ModelState.AddModelError("Name", "Namn måste anges");
-            }
             //Kontrollera korrekt ifyllt fält för signatur
             if (string.IsNullOrWhiteSpace(vm.Signature))
             {
                 ModelState.AddModelError("Signature", "Signatur måste anges");
+            }
+            //Kontrollera korrekt ifyllt fält för namn
+            if (string.IsNullOrWhiteSpace(vm.Name))
+            {
+                ModelState.AddModelError("Name", "Namn måste anges");
             }
             //Kontrollera att StartedDiving är ifyllt om personen är dykare
             if (isDiver && vm.StartedDiving == null)
@@ -245,8 +245,8 @@ namespace divelog.Controllers
             }
 
             //Uppdaterar data
-            person.Name = vm.Name;
             person.Signature = vm.Signature;
+            person.Name = vm.Name;
             person.GroupId = vm.GroupId;
             //Om personen inte är dykare sätts StartedDiving till null
             person.StartedDiving = isDiver ? vm.StartedDiving : null;

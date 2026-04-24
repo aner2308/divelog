@@ -1,0 +1,279 @@
+.person-card {
+    max-width: 900px;
+    width: 90vw;
+    margin: 0 auto 2rem auto;
+    padding: 2rem;
+    background: #9DB2BF;
+    border-radius: 14px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.25);
+    color: white;
+    display: flex;
+    flex-direction: column;
+}
+
+.person-form {
+    max-width: 900px;
+    width: 90vw;
+    margin: 0 auto 2rem auto;
+    padding: 2rem;
+    background: #9DB2BF;
+    border-radius: 14px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.25);
+    color: white;
+    display: flex;
+    flex-direction: column;
+}
+
+.person-title {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.person-details {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    row-gap: 1rem;
+    column-gap: 1rem;
+}
+
+.person-details dt {
+    font-weight: 600;
+    text-align: right;
+}
+
+.person-details dd {
+    margin: 0;
+}
+
+.role-list {
+    list-style: none;
+    padding: 0;
+}
+
+.role-list li {
+    background: rgba(255, 255, 255, 0.15);
+    padding: 4px 10px;
+    border-radius: 6px;
+    display: inline-block;
+    margin: 2px 6px 2px 0;
+}
+
+.person-actions {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    margin-top: 3rem;
+}
+
+.person-btn {
+    background-color: #E17100;
+    color: white;
+    text-decoration: none;
+    height: 40px;
+    width: 140px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 5px 5px 0px rgba(100, 100, 100, 0.7);
+    border-style: none;
+}
+
+.person-btn:hover {
+    transform: scale(1.05);
+}
+
+.form-row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.person-form label {
+    width: 50%;
+    text-align: right;
+    margin-right: 0.5rem;
+    padding-left: 0.5rem;
+}
+
+.person-form input,
+.person-form select {
+    padding: 8px 10px;
+    border-radius: 6px;
+    border: none;
+}
+
+.person-form input {
+    max-width: 45%;
+}
+
+.person-form select {
+    cursor: pointer;
+}
+
+.checkbox-column {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.checkbox-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.checkbox-row input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+}
+
+.btn-container {
+    display: flex;
+    justify-content: center;
+}
+
+.submit-btn {
+    background-color: #E17100;
+    color: white;
+    box-shadow: 5px 5px 0px rgba(100, 100, 100, 0.7);
+    height: 40px;
+    width: 140px;
+    border-radius: 0 !important;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+    margin-bottom: 1rem;
+}
+
+.submit-btn:hover {
+    transform: scale(1.05);
+}
+
+.validation-summary-valid {
+    display: none;
+}
+
+.error {
+    padding: 1rem;
+    background-color: #FFE5CC;
+    border-left: 4px solid #E17100;
+    color: #E17100;
+    border-radius: 5px;
+    text-align: left;
+    margin-bottom: 1rem;
+}
+
+.navigate-back {
+    text-align: center;
+}
+
+.navigate-back a {
+    color: white;
+}
+
+.page-container {
+    padding-left: 2rem;
+    padding-right: 2rem;
+}
+
+.table-container {
+    width: 100%;
+    overflow-x: auto;
+}
+
+/*Skapar en scrollbar på små skärmar*/
+.table-container::-webkit-scrollbar {
+    height: 6px;
+}
+
+.table-container::-webkit-scrollbar-thumb {
+    background-color: rgba(0, 0, 0, 0.3);
+    border-radius: 3px;
+    margin: 0 auto 2rem auto;
+}
+
+.person-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: auto;
+}
+
+.person-table th {
+    background-color: #E17100;
+    color: white;
+    padding: 1rem;
+    text-align: left;
+}
+
+.person-table td {
+    padding: 1rem;
+    color: black;
+}
+
+/*Bakgrundsfärg på jämna rader*/
+.person-table tbody tr:nth-child(even) {
+    background-color: #9DB2BF;
+}
+
+/*Bakgrundsfärg på ojämna rader*/
+.person-table tbody tr:nth-child(odd) {
+    background-color: #DDE6ED;
+}
+
+.button-wrapper {
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-end;
+    align-items: center;
+    flex-wrap: nowrap;
+}
+
+.table-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    background-color: #E17100;
+    color: white;
+    box-shadow: 5px 5px 0px rgba(100, 100, 100, 0.7);
+    height: 40px;
+    width: 110px;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.person-btn:hover {
+    transform: scale(1.05);
+}
+
+.table-btn:hover {
+    transform: scale(1.05);
+}
+
+.table-tools {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+/*Regler för mobil ("Ny person"-knapp)*/
+@media (max-width: 768px) {
+    .table-tools {
+        flex-direction: column-reverse;
+        align-items: stretch;
+        gap: 1rem;
+    }
+
+    .add-btn {
+        align-self: center;
+        margin-bottom: 1rem;
+    }
+}
+
+.remove {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    text-align: center;
+    color: rgb(255, 39, 39);
+}
