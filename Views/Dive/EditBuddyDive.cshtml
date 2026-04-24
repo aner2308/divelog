@@ -1,90 +1,170 @@
 @model divelog.ViewModels.EditBuddyDiveViewModel
 
-<h2>Redigera pardyk</h2>
-
-<form asp-action="EditBuddyDive">
-
-    <input type="hidden" asp-for="DiveId" />
-
-    <div asp-validation-summary="All" class="text-danger"></div>
-
-    <div class="mb-3">
-        <label asp-for="Date">Datum</label>
-        <input asp-for="Date" type="date" class="form-control" />
-    </div>
-
-    <div class="mb-3">
-        <label asp-for="StartTime">Starttid</label>
-        <input asp-for="StartTime" type="time" class="form-control" />
-    </div>
-
-    <div class="mb-3">
-        <label>Plats</label>
-        <input asp-for="LocationName" class="form-control" />
-    </div>
-
-    <div class="mb-3">
-        <label>Typ av dyk</label> 
-        <select asp-for="DivePurposeId" class="form-control">
-        @foreach (var purpose in Model.DivePurposes)
-        {
-            <option value="@purpose.Id">@purpose.Name</option>
-        }
-    </select>
-</div>
-
-<div class="mb-3">
-    <label>Latitud</label>
-    <input asp-for="Latitude" class="form-control" />
-</div>
-
-<div class="mb-3">
-    <label>Longitud</label>
-    <input asp-for="Longitude" class="form-control" />
-</div>
-
-<div class="mb-3">
-    <label>Anteckningar</label>
-    <textarea asp-for="Notes" class="form-control"></textarea>
-</div>
-
-<div class="mb-3">
-    <label>Dykledare</label>
-    <select asp-for="DiveLeaderId" class="form-control">
-        @foreach (var p in Model.DiveLeaders)
-        {
-            <option value="@p.Id">@p.Signature @p.Name</option>
-        }
-    </select>
-</div>
-
-<h4>Dykare</h4>
-
-@for (int i = 0; i < Model.Divers.Count; i++)
-{
-    <div class="border p-2 mb-2">
-
-        <label>Dykare</label>
-        <select asp-for="Divers[i].DiverId" class="form-control">
-            @foreach (var p in Model.AvailableDivers)
-            {
-                <option value="@p.Id">@p.Signature @p.Name</option>
-            }
-        </select>
-
-        <label>Djup</label>
-        <input asp-for="Divers[i].Depth" class="form-control" />
-
-        <label>Dyktid</label>
-        <input asp-for="Divers[i].DiveTime" class="form-control" />
-
-        <label>Luft före</label>
-        <input asp-for="Divers[i].AirPressureBefore" class="form-control" />
-
-        <label>Luft efter</label>
-        <input asp-for="Divers[i].AirPressureAfter" class="form-control" />
-    </div>
+@{
+    ViewData["Title"] = "Redigera pardyk";
 }
 
-<button type="submit" class="btn btn-primary">Spara</button>
+<h2 class="h2-tab">Redigera pardyk</h2>
+
+<form asp-action="EditBuddyDive" method="post" class="dive-form">
+
+    <!-- Dykets ID används för att rätt dyk ska uppdateras -->
+    <input type="hidden" asp-for="DiveId" />
+
+    <!-- Valideringsfel visas här -->
+    <div asp-validation-summary="All" class="error"></div>
+
+    <!-- GEMENSAM DYKINFORMATION -->
+    <div class="form-row">
+        <label asp-for="Date">Datum:</label>
+        <input asp-for="Date" type="date" class="date-input" />
+    </div>
+
+    <div class="form-row">
+        <label asp-for="StartTime">Starttid:</label>
+        <input asp-for="StartTime" type="time" />
+    </div>
+
+    <div class="form-row">
+        <label asp-for="LocationName">Plats:</label>
+        <input asp-for="LocationName" />
+    </div>
+
+    <div class="form-row">
+        <label asp-for="DivePurposeId">Typ av dyk:</label>
+        <select asp-for="DivePurposeId">
+            @foreach (var purpose in Model.DivePurposes)
+            {
+                <option value="@purpose.Id">
+                    @purpose.Name
+                </option>
+            }
+        </select>
+    </div>
+
+    <div class="form-row">
+        <label asp-for="Latitude">Latitud:</label>
+        <input asp-for="Latitude" />
+    </div>
+
+    <div class="form-row">
+        <label asp-for="Longitude">Longitud:</label>
+        <input asp-for="Longitude" />
+    </div>
+
+    <div class="form-row">
+        <label asp-for="DiveLeaderId">Dykledare:</label>
+        <select asp-for="DiveLeaderId">
+            @foreach (var p in Model.DiveLeaders)
+            {
+                <option value="@p.Id">
+                    @p.Signature @p.Name
+                </option>
+            }
+        </select>
+    </div>
+
+    <!-- INFORMATION OM DYKARNA -->
+    <h4>Pardyk</h4>
+
+    <div class="pair-group">
+
+        <div class="diversContainer">
+
+            @for (int i = 0; i < Model.Divers.Count; i++)
+            {
+                <div class="diver-card">
+
+                    <label>Dykare:</label>
+                    <select asp-for="Divers[i].DiverId">
+                        @foreach (var p in Model.AvailableDivers)
+                        {
+                            <option value="@p.Id">
+                                @p.Signature @p.Name
+                            </option>
+                        }
+                    </select>
+
+                    <label>Lufttryck före:</label>
+                    <input asp-for="Divers[i].AirPressureBefore" />
+
+                    <label>Djup:</label>
+                    <input asp-for="Divers[i].Depth" class="depth-input" />
+
+                    <label>Dyktid:</label>
+                    <input asp-for="Divers[i].DiveTime" class="time-input" />
+
+                    <label>Lufttryck efter:</label>
+                    <input asp-for="Divers[i].AirPressureAfter" />
+
+                    <!-- Live-uträknad expositionstid -->
+                    <label>Expositionstid:</label>
+                    <p class="exposition-time">0 min</p>
+
+                </div>
+            }
+
+        </div>
+    </div>
+
+    <div class="notes">
+        <label asp-for="Notes">Anteckningar:</label>
+        <textarea asp-for="Notes"></textarea>
+    </div>
+
+    <!-- SPARA -->
+    <button type="submit" class="form-btn">
+        Spara ändringar
+    </button>
+
 </form>
+
+<div class="navigate-back">
+    <a asp-action="Index">Tillbaka till Dyklogg</a>
+</div>
+
+<script>
+    //Räknar ut expositionstid
+    function calculateExposure(depth, time) {
+        if (!depth || !time) return 0;
+
+        const depthFactor = Math.ceil(depth / 9);
+        return Math.max(0, time - depthFactor);
+    }
+
+    //Uppdaterar expositionstid i rätt kort
+    function updateExposureFromCard(card) {
+        const depthInput = card.querySelector(".depth-input");
+        const timeInput = card.querySelector(".time-input");
+        const output = card.querySelector(".exposition-time");
+
+        if (!depthInput || !timeInput || !output) return;
+
+        const depth = parseFloat(depthInput.value);
+        const time = parseFloat(timeInput.value);
+
+        const exposure = calculateExposure(depth, time);
+
+        output.textContent = exposure + " min";
+    }
+
+    document.addEventListener("input", function (e) {
+        if (
+            e.target.classList.contains("depth-input") ||
+            e.target.classList.contains("time-input")
+        ) {
+            const card = e.target.closest(".diver-card");
+
+            if (card) {
+                updateExposureFromCard(card);
+            }
+        }
+    });
+
+
+    window.onload = function () {
+        document.querySelectorAll(".diver-card").forEach(card => {
+            updateExposureFromCard(card);
+        });
+    };
+</script>

@@ -272,6 +272,7 @@ namespace divelog.Controllers
             //Om validering misslyckas skickas formuläret tillbaka med felmeddelanden
             if (!ModelState.IsValid)
             {
+                
                 PopulateDropdowns(vm);
 
                 if (!vm.PairGroups.Any())
