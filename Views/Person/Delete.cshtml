@@ -5,50 +5,46 @@
 }
 
 <h1>Ta bort</h1>
+<p class="remove">Är du säker på att du vill ta bort personen?</p>
 
-<h2>Är du säker på att du vill ta bort personen?</h3>
-    <div>
-        <h3 class="person-title">
-            @Model.Signature - @Model.Name
-        </h3>
-
-        <div class="person-content">
-
-            <dl class="person-details">
-
-                <dt>Grupp</dt>
-                <dd>@Html.DisplayFor(model => model.Group.Name)</dd>
-
-                <dt>Roller</dt>
-                <dd>
-                    @if (Model.PersonRoles != null && Model.PersonRoles.Any())
-                    {
-                        <ul class="role-list">
-                            @foreach (var personRole in Model.PersonRoles)
-                            {
-                                <li>@personRole.DiveRole.Name</li>
-                            }
-                        </ul>
-                    }
-                    else
-                    {
-                        <span>Inga roller tilldelade</span>
-                    }
-                </dd>
-
-                @if (Model.PersonRoles?.Any(pr => pr.DiveRole?.Name == "Dykare") == true)
+<div class="person-card">
+    <h2 class="person-title">
+        @Model.Signature - @Model.Name
+    </h2>
+    <div class="person-content">
+        <dl class="person-details">
+            <dt>Grupp: </dt>
+            <dd>@Html.DisplayFor(model => model.Group.Name)</dd>
+            <dt>Roller: </dt>
+            <dd>
+                @if (Model.PersonRoles != null && Model.PersonRoles.Any())
                 {
-                    <dt>Började dyka</dt>
-                    <dd>@Model.StartedDiving?.ToString("yyyy-MM-dd")</dd>
+                    <ul class="role-list">
+                        @foreach (var personRole in Model.PersonRoles)
+                        {
+                            <li>@personRole.DiveRole.Name</li>
+                        }
+                    </ul>
                 }
-
-            </dl>
-        </div>
+                else
+                {
+                    <span>Inga roller tilldelade</span>
+                }
+            </dd>
+            @if (Model.PersonRoles?.Any(pr => pr.DiveRole?.Name == "Dykare") == true)
+            {
+                <dt>Började dyka: </dt>
+                <dd>@Model.StartedDiving?.ToString("yyyy-MM-dd")</dd>
+            }
+        </dl>
     </div>
     <div>
-        <form asp-action="Delete">
+        <form class="person-actions" asp-action="Delete">
             <input type="hidden" asp-for="Id" />
-            <input type="submit" value="Ta bort" class="btn btn-danger" /> |
-            <a asp-action="Index">Tillbaka till Personal</a>
+            <input type="submit" value="Ta bort" class="person-btn" />
         </form>
     </div>
+</div>
+<div class="navigate-back">
+    <a asp-action="Index">Tillbaka till Personal</a>
+</div>

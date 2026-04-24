@@ -6,19 +6,15 @@
 
 <h1>Detaljer</h1>
 
-<div>
-    <h3 class="person-title">
+<div class="person-card">
+    <h2 class="person-title">
         @Model.Signature - @Model.Name
-    </h3>
-
+    </h2>
     <div class="person-content">
-
         <dl class="person-details">
-
-            <dt>Grupp</dt>
+            <dt>Grupp: </dt>
             <dd>@Html.DisplayFor(model => model.Group.Name)</dd>
-
-            <dt>Roller</dt>
+            <dt>Roller: </dt>
             <dd>
                 @if (Model.PersonRoles != null && Model.PersonRoles.Any())
                 {
@@ -34,17 +30,19 @@
                     <span>Inga roller tilldelade</span>
                 }
             </dd>
-
             @if (Model.PersonRoles?.Any(pr => pr.DiveRole?.Name == "Dykare") == true)
             {
-                <dt>Började dyka</dt>
+                <dt>Började dyka: </dt>
                 <dd>@Model.StartedDiving?.ToString("yyyy-MM-dd")</dd>
             }
-
         </dl>
     </div>
+    <div class="person-actions">
+        <a asp-action="Edit" class="person-btn" asp-route-id="@Model?.Id">Redigera</a>
+    </div>
 </div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Redigera</a> |
+<div class="navigate-back">
     <a asp-action="Index">Tillbaka till Personal</a>
 </div>
+
+

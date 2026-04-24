@@ -7,43 +7,49 @@
 
 <h1>Personal</h1>
 
-<p>
-    <a asp-action="Create">Ny person</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                Signatur
-            </th>
-            <th>
-                Namn
-            </th>
-            <th>
-                Grupp
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Signature)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Name)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Group.Name)
-                </td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.Id">Redigera</a> |
-                    <a asp-action="Details" asp-route-id="@item.Id">Detaljer</a> |
-                    <a asp-action="Delete" asp-route-id="@item.Id">Ta bort</a>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+<div class="page-container">
+    <div class="table-tools">
+        <a asp-action="Create" class="table-btn add-btn">Ny person</a>
+    </div>
+    <div class="table-container">
+        <table class="person-table">
+            <thead>
+                <tr>
+                    <th>
+                        Signatur
+                    </th>
+                    <th>
+                        Namn
+                    </th>
+                    <th>
+                        Grupp
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Signature)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Name)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Group.Name)
+                        </td>
+                        <td>
+                            <div class="button-wrapper">
+                                <a asp-action="Edit" asp-route-id="@item.Id" class="table-btn">Redigera</a>
+                                <a asp-action="Details" asp-route-id="@item.Id" class="table-btn">Detaljer</a>
+                                <a asp-action="Delete" asp-route-id="@item.Id" class="table-btn">Ta bort</a>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
