@@ -57,10 +57,14 @@ h4 {
 
 /*Element i formulär ärver font från body */
 input,
-button,
 textarea,
 select {
   font: inherit;
+}
+
+button {
+  font: inherit;
+  font-size: 1.6rem;
 }
 
 .page-wrapper {

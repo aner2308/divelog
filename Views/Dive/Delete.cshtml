@@ -4,55 +4,137 @@
     ViewData["Title"] = "Delete";
 }
 
-<h1>Delete</h1>
+<h2>Radera</h2>
 
-<h3>Are you sure you want to delete this?</h3>
-<div>
-    <h4>Dive</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Date)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Date)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.StartTime)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.StartTime)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.LocationName)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.LocationName)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Latitude)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Latitude)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Longitude)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Longitude)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Notes)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Notes)
-        </dd>
-    </dl>
+<h3>Är du säker på att du vill radera dyket?</h3>
+
+@{
+    var leader = Model.DiveParticipants?
+        .FirstOrDefault(p => p.DiveRoleId == 2);
+
+    var divers = Model.DiveParticipants?
+        .Where(p => p.DiveRoleId == 1)
+        .ToList();
+
+    var support = Model.DiveParticipants?
+        .FirstOrDefault(p => p.DiveRoleId == 3);
+}
+
+<div class="dive-form dive-details">
+
+    <!-- Titelrad -->
+    <h3 class="dive-title">
+        @Model.Date.ToString("yyyy-MM-dd")
+        – @Model.LocationName
+    </h3>
+
+    <div class="details-layout">
+
+        <!-- Vänster kolumn -->
+        <dl class="details-list">
+
+            <dt>Dyktyp:</dt>
+            <dd>
+                @if (Model.DiveType == divelog.Models.DiveType.Pardyk)
+                {
+                    <span>Pardyk</span>
+                }
+                else
+                {
+                    <span>Luft från ytan</span>
+                }
+            </dd>
+
+            <dt>Starttid:</dt>
+            <dd>@Model.StartTime.ToString(@"hh\:mm")</dd>
+
+            <dt>Koordinater:</dt>
+            <dd>@Model.Latitude , @Model.Longitude</dd>
+
+            <dt>Typ av dyk:</dt>
+            <dd>@Model.DivePurpose?.Name</dd>
+
+            <dt>Dykledare:</dt>
+            <dd>
+                @if (leader != null)
+                {
+                    <span>@leader.Person.Signature - @leader.Person.Name</span>
+                }
+                else
+                {
+                    <span>Ingen dykledare registrerad</span>
+                }
+            </dd>
+
+            <dt>Dykskötare:</dt>
+            <dd>
+                @if (support != null)
+                {
+                    <span>@support.Person.Signature - @support.Person.Name</span>
+                }
+                else
+                {
+                    <span>Ingen dykskötare registrerad</span>
+                }
+            </dd>
+
+            <dt>Anteckningar:</dt>
+            <dd>@Model.Notes</dd>
+
+        </dl>
+
+        <!-- Höger kolumn: karta -->
+        <div id="details-map"></div>
+
+    </div>
+
+    <!-- Dykare -->
+    <h4>Dykare</h4>
+
+    <div class="details-divers">
+
+        @foreach (var d in divers ?? new List<divelog.Models.DiveParticipant>())
+        {
+            <div class="diver-detail-card">
+
+                <h5>
+                    <span>@d.Person.Signature - @d.Person.Name</span>
+                </h5>
+                <dl class="details-list">
+                    <dt>Djup:</dt>
+                    <dd>@(d.Depth?.ToString() ?? "-") m</dd>
+
+                    <dt>Dyktid:</dt>
+                    <dd>@(d.DiveTime?.ToString() ?? "-") min</dd>
+
+                    <dt>Expositionstid:</dt>
+                    <dd>@(d.ExposureTime?.ToString() ?? "-") min</dd>
+
+                    <dt>Kvävebelastning:</dt>
+                    <dd>@(d.NitrogenLoad?.ToString() ?? "-")</dd>
+
+                    @if (d.AirPressureBefore.HasValue && d.AirPressureAfter.HasValue)
+                    {
+                        <dt>Luft:</dt>
+                        <dd>@($"{d.AirPressureBefore} / {d.AirPressureAfter} bar")</dd>
+                    }
+                    else
+                    {
+                        <span></span>
+                    }
+                </dl>
+            </div>
+        }
+
+    </div>
     
     <form asp-action="Delete">
         <input type="hidden" asp-for="Id" />
-        <input type="submit" value="Delete" class="btn btn-danger" /> |
-        <a asp-action="Index">Back to List</a>
+        <div class="details-button-wrapper">
+            <button type="submit" class="form-btn remove-btn">
+                Radera dyk
+            </button>
+        </div>
     </form>
 </div>
 
