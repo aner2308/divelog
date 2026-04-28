@@ -44,16 +44,6 @@
     </div>
 
     <div class="form-row">
-        <label asp-for="Latitude"></label>
-        <input asp-for="Latitude" />
-    </div>
-
-    <div class="form-row">
-        <label asp-for="Longitude"></label>
-        <input asp-for="Longitude" />
-    </div>
-
-    <div class="form-row">
         <label asp-for="DiveLeaderId">Dykledare: </label>
         <select asp-for="DiveLeaderId">
             <option value="">Välj dykledare</option>
@@ -225,6 +215,8 @@
     </div>
 
     <div id="map"></div>
+    <input asp-for="Latitude" id="Latitude" type="hidden" />
+    <input asp-for="Longitude" id="Longitude" type="hidden" />
 
     <br />
 
@@ -511,3 +503,66 @@
         });
     };
 </script>
+
+@section Scripts {
+    <script>
+
+        // Skapar kartan
+        var map = L.map('map');
+
+        // OpenStreetMap tiles
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; OpenStreetMap'
+        }).addTo(map);
+
+        var marker;
+
+        // Om användaren har platstjänster aktiverade
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(function (position) {
+
+                var userLat = position.coords.latitude;
+                var userLng = position.coords.longitude;
+
+                // Zooma till användarens position
+                map.setView([userLat, userLng], 15);
+
+            }, function () {
+                //Om man inte har platstjänst aktiverad visas Västerås som default
+                map.setView([59.595, 16.56], 13);   
+            });
+        } else {
+            map.setView([59.595, 16.56], 13);
+        }
+
+        // När användaren klickar på kartan
+        map.on('click', function (e) {
+
+            // Riktiga nummer för Leaflet
+            var lat = e.latlng.lat;
+            var lng = e.latlng.lng;
+
+            // Formatterade värden för ASP.NET
+            var latForInput = lat.toFixed(6).replace('.', ',');
+            var lngForInput = lng.toFixed(6).replace('.', ',');
+
+            // Ta bort gammal marker
+            if (marker) {
+                map.removeLayer(marker);
+            }
+
+            // Lägg till ny marker (MÅSTE vara riktiga nummer)
+            marker = L.marker([lat, lng]).addTo(map);
+
+            // Spara till hidden inputs (med komma)
+            document.getElementById("Latitude").value = latForInput;
+            document.getElementById("Longitude").value = lngForInput;
+        });
+
+    </script>
+
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
+

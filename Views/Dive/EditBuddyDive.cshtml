@@ -43,16 +43,6 @@
     </div>
 
     <div class="form-row">
-        <label asp-for="Latitude">Latitud:</label>
-        <input asp-for="Latitude" />
-    </div>
-
-    <div class="form-row">
-        <label asp-for="Longitude">Longitud:</label>
-        <input asp-for="Longitude" />
-    </div>
-
-    <div class="form-row">
         <label asp-for="DiveLeaderId">Dykledare:</label>
         <select asp-for="DiveLeaderId">
             @foreach (var p in Model.DiveLeaders)
@@ -112,6 +102,10 @@
         <textarea asp-for="Notes"></textarea>
     </div>
 
+    <input asp-for="Latitude" id="Latitude" type="hidden" />
+    <input asp-for="Longitude" id="Longitude" type="hidden" />
+    <div id="map"></div>
+
     <!-- SPARA -->
     <button type="submit" class="form-btn">
         Spara ändringar
@@ -168,3 +162,42 @@
         });
     };
 </script>
+
+@section Scripts {
+    <script>
+
+        //Hämta sparade koordinater
+        var lat = @Model.Latitude.ToString(System.Globalization.CultureInfo.InvariantCulture);
+        var lng = @Model.Longitude.ToString(System.Globalization.CultureInfo.InvariantCulture);
+
+        // Skapa karta
+        var map = L.map('map').setView([lat, lng], 14);
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; OpenStreetMap'
+        }).addTo(map);
+
+        var marker = L.marker([lat, lng]).addTo(map);
+
+        // Flytta markering vid klick
+        map.on('click', function (e) {
+
+            var newLat = e.latlng.lat.toFixed(6);
+            var newLng = e.latlng.lng.toFixed(6);
+
+            marker.setLatLng([newLat, newLng]);
+
+            // Byter ut punkt mot decimal för korrekt format
+            document.getElementById("Latitude").value =
+                newLat.replace('.', ',');
+
+            document.getElementById("Longitude").value =
+                newLng.replace('.', ',');
+        });
+
+    </script>
+
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
