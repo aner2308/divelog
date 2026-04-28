@@ -257,12 +257,28 @@
     margin-bottom: 1rem;
 }
 
-/*Regler för mobil ("Ny person"-knapp)*/
+.person-filter-form {
+    display: flex;
+    gap: 1rem;
+    flex: 1;
+}
+
+.person-filter-form select {
+    padding: 8px 10px;
+    border-radius: 6px;
+    border: none;
+}
+
+/*Regler för mobil (filtrering och "Ny person"-knapp)*/
 @media (max-width: 768px) {
     .table-tools {
         flex-direction: column-reverse;
         align-items: stretch;
         gap: 1rem;
+    }
+
+    .person-filter-form {
+        justify-content: center;
     }
 
     .add-btn {
@@ -276,4 +292,19 @@
     margin-bottom: 1rem;
     text-align: center;
     color: rgb(255, 39, 39);
+}
+
+.pagination {
+    text-align: center;
+}
+
+.pagination a {
+    color: white;
+    text-decoration: none;
+    margin-right: 1rem;
+}
+
+.pagination a.active-page {
+    text-decoration: underline;
+    margin-right: 1rem;
 }
