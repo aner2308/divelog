@@ -46,9 +46,6 @@
             <dt>Starttid:</dt>
             <dd>@Model.StartTime.ToString(@"hh\:mm")</dd>
 
-            <dt>Koordinater:</dt>
-            <dd>@Model.Latitude , @Model.Longitude</dd>
-
             <dt>Typ av dyk:</dt>
             <dd>@Model.DivePurpose?.Name</dd>
 
@@ -139,3 +136,23 @@
 <div class="navigate-back">
     <a asp-action="Index">Tillbaka till Dyklogg</a>
 </div>
+
+@section Scripts {
+    <script>
+
+        //Byter ut punkter i mina sparade koordinater till decimaler
+        var lat = @Model?.Latitude.ToString(System.Globalization.CultureInfo.InvariantCulture);
+        var lng = @Model?.Longitude.ToString(System.Globalization.CultureInfo.InvariantCulture);
+
+        //Skapa karta
+        var map = L.map('details-map').setView([lat, lng], 14);
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; OpenStreetMap'
+        }).addTo(map);
+
+        //Lägger till markör
+        L.marker([lat, lng]).addTo(map);
+
+    </script>
+}
