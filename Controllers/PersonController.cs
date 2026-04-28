@@ -22,12 +22,46 @@ namespace divelog.Controllers
 
         // GET: Person
         //Hämtar alla personer från databasen
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int page = 1, int? groupId = null)
         {
-            //Hämtar alla personer inklusive grupper
-            var persons = _context.Persons.Include(p => p.Group);
-            //Returnerar en lista med alla personer
-            return View(await persons.ToListAsync());
+            //Totalt antal personer per sida
+            int pageSize = 10;
+
+            //Hämta alla personer
+            var query = _context.Persons
+                                .Include(p => p.Group)
+                                .AsQueryable();
+
+            //Filtrera på grupp om groupId är valt
+            if (groupId.HasValue)
+            {
+                query = query.Where(p => p.GroupId == groupId);
+            }
+
+            //Sortera efter namn
+            query = query.OrderBy(p => p.Name);
+
+            var totalItems = await query.CountAsync();
+
+            //Hämta bara sidan vi vill visa
+            var persons = await query
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            //ViewBag för paginering
+            ViewBag.CurrentPage = page;
+            ViewBag.TotalPages = (int)Math.Ceiling(totalItems / (double)pageSize);
+
+            //ViewBag för grupp-filter dropdown
+            ViewBag.Groups = new SelectList(
+                _context.Groups.OrderBy(g => g.Name),
+                "Id",
+                "Name",
+                groupId
+            );
+
+            return View(persons);
         }
 
         // GET: Person/Details/5

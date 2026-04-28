@@ -3,12 +3,30 @@
 @{
     ViewData["Title"] = "Personal";
     Layout = "_LayoutPattern";
+
+    int currentPage = ViewBag.CurrentPage;
+    int totalPages = ViewBag.TotalPages;
+    int maxPagesToShow = 5;
+
+    int startPage = Math.Max(1, currentPage - 2);
+    int endPage = Math.Min(totalPages, startPage + maxPagesToShow - 1);
+
+    //Justera vilka sidor som visas på slutet
+    if (endPage - startPage < maxPagesToShow - 1)
+    {
+        startPage = Math.Max(1, endPage - maxPagesToShow + 1);
+    }
 }
 
 <h1>Personal</h1>
 
 <div class="page-container">
     <div class="table-tools">
+        <form method="get" class="person-filter-form">
+            <select name="groupId" asp-items="ViewBag.Groups" onchange="this.form.submit()">
+                <option value="">Alla grupper</option>
+            </select>
+        </form>
         <a asp-action="Create" class="table-btn add-btn">Ny person</a>
     </div>
     <div class="table-container">
@@ -52,4 +70,25 @@
             </tbody>
         </table>
     </div>
+    @if (ViewBag.TotalPages > 1)
+    {
+        <div class="pagination">
+            @if (currentPage > 1)
+            {
+                <a asp-action="Index" asp-route-page="1">«</a>
+                <a asp-action="Index" asp-route-page="@(currentPage - 1)">‹</a>
+            }
+
+            @for (int i = startPage; i <= endPage; i++)
+            {
+                <a asp-action="Index" asp-route-page="@i" class="@(currentPage == i ? "active-page" : "")">@i</a>
+            }
+
+            @if (currentPage < totalPages)
+            {
+                <a asp-action="Index" asp-route-page="@(currentPage + 1)">›</a>
+                <a asp-action="Index" asp-route-page="@totalPages">»</a>
+            }
+        </div>
+    }
 </div>
