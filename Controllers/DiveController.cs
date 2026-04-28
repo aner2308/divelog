@@ -272,7 +272,7 @@ namespace divelog.Controllers
             //Om validering misslyckas skickas formuläret tillbaka med felmeddelanden
             if (!ModelState.IsValid)
             {
-                
+
                 PopulateDropdowns(vm);
 
                 if (!vm.PairGroups.Any())
@@ -596,13 +596,26 @@ namespace divelog.Controllers
         }
 
         // GET: Dive/Delete/5
+        // GET: Dive/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null) return NotFound();
+            if (id == null)
+            {
+                return NotFound();
+            }
 
-            var dive = await _context.Dives.FirstOrDefaultAsync(m => m.Id == id);
+            var dive = await _context.Dives
+                .Include(d => d.DiveParticipants)
+                    .ThenInclude(dp => dp.Person)
+                .Include(d => d.DiveParticipants)
+                    .ThenInclude(dp => dp.DiveRole)
+                .Include(d => d.DivePurpose)
+                .FirstOrDefaultAsync(m => m.Id == id);
 
-            if (dive == null) return NotFound();
+            if (dive == null)
+            {
+                return NotFound();
+            }
 
             return View(dive);
         }
