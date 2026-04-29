@@ -61,6 +61,9 @@ namespace divelog.Controllers
                 groupId
             );
 
+            //Sparar aktuella filtervärden för att behålla filtrering vid paginering
+            ViewBag.GroupId = groupId;
+
             return View(persons);
         }
 

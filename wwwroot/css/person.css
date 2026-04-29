@@ -163,6 +163,13 @@
     margin-bottom: 1rem;
 }
 
+.remove {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    text-align: center;
+    color: rgb(255, 39, 39);
+}
+
 .navigate-back {
     text-align: center;
 }
@@ -176,6 +183,7 @@
     padding-right: 2rem;
 }
 
+/*Tabell på index-sidan*/
 .table-container {
     width: 100%;
     overflow-x: auto;
@@ -250,6 +258,7 @@
     transform: scale(1.05);
 }
 
+/*Filtreringsfunktionalitet och "Ny person"-knapp*/
 .table-tools {
     display: flex;
     justify-content: space-between;
@@ -267,6 +276,10 @@
     padding: 8px 10px;
     border-radius: 6px;
     border: none;
+    max-width: 225px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 /*Regler för mobil (filtrering och "Ny person"-knapp)*/
@@ -279,6 +292,13 @@
 
     .person-filter-form {
         justify-content: center;
+        flex-direction: column;
+        width: 50%;
+        margin: auto;
+    }
+
+    .person-filter-form select {
+        max-width: 768px;
     }
 
     .add-btn {
@@ -287,13 +307,13 @@
     }
 }
 
-.remove {
-    font-size: 2rem;
-    margin-bottom: 1rem;
-    text-align: center;
-    color: rgb(255, 39, 39);
+@media (max-width: 480px) {
+    .person-filter-form {
+        width: 100%;
+    }
 }
 
+/*Paginering*/
 .pagination {
     text-align: center;
 }
