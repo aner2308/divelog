@@ -81,13 +81,100 @@ namespace divelog.Controllers
         }
 
         // GET: Dive
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int page = 1, int? groupId = null, int? personId = null, int? divePurposeId = null)
         {
-            return View(await _context.Dives
-            .Include(d => d.DiveParticipants)
-            .ThenInclude(dp => dp.Person)
-            .Include(d => d.DivePurpose)
-            .ToListAsync());
+            //Totalt antal dyk per sida
+            int pageSize = 10;
+
+            var query = _context.Dives
+                .Include(d => d.DiveParticipants)
+                    .ThenInclude(dp => dp.Person)
+                .Include(d => d.DivePurpose)
+                .AsQueryable();
+
+            //Filtrera på grupp
+            if (groupId.HasValue)
+            {
+                query = query.Where(d =>
+                    d.DiveParticipants.Any(p => p.Person.GroupId == groupId));
+            }
+
+            //Filtrera på person
+            if (personId.HasValue)
+            {
+                query = query.Where(d =>
+                    d.DiveParticipants.Any(p => p.PersonId == personId));
+            }
+
+            //Filtrera på syfte
+            if (divePurposeId.HasValue)
+            {
+                query = query.Where(d => d.DivePurposeId == divePurposeId);
+            }
+
+            //Sortera efter datum
+            query = query.OrderByDescending(d => d.Date);
+
+            var totalItems = await query.CountAsync();
+
+            //Hämta sidan vi vill visa
+            var dives = await query
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            //ViewBag för paginering
+            ViewBag.CurrentPage = page;
+            ViewBag.TotalPages = (int)Math.Ceiling(totalItems / (double)pageSize);
+
+            //Dropdown för grupper
+            ViewBag.Groups = new SelectList(
+                _context.Groups.OrderBy(g => g.Name),
+                "Id",
+                "Name",
+                groupId
+            );
+
+            //Hämta personer från databasen
+            var persons = _context.Persons.Where(p => !p.IsDeleted).AsQueryable();
+
+            //Om det redan är filtrerat på grupp, välj endast personer från gruppen
+            if (groupId.HasValue)
+            {
+                persons = persons.Where(p => p.GroupId == groupId);
+            }
+
+            //Dropdown för personer
+            ViewBag.Persons = new SelectList(
+                    persons
+                    .OrderBy(p => p.Name)
+                    .ToList()
+                    .Select(p => new
+                    {
+                        p.Id,
+                        DisplayName = (p.Name ?? "").Length > 25
+                        ? $"{p.Signature} - {p.Name.Substring(0, 20)}..."
+                        : $"{p.Signature} - {p.Name}"
+                    }),
+                    "Id",
+                    "DisplayName",
+                    personId
+            );
+
+            //Dropdown för syften
+            ViewBag.Purposes = new SelectList(
+                _context.DivePurposes.OrderBy(p => p.Name),
+                "Id",
+                "Name",
+                divePurposeId
+            );
+
+            //Sparar aktuella filtervärden för att behålla filtrering vid paginering
+            ViewBag.GroupId = groupId;
+            ViewBag.PersonId = personId;
+            ViewBag.DivePurposeId = divePurposeId;
+
+            return View(dives);
         }
 
         // GET: Dive/Details/5

@@ -3,12 +3,37 @@
 @{
     ViewData["Title"] = "Index";
     Layout = "_LayoutPattern";
+
+    //Variabler för paginering
+    int currentPage = ViewBag.CurrentPage;
+    int totalPages = ViewBag.TotalPages;
+    int maxPagesToShow = 5;
+
+    int startPage = Math.Max(1, currentPage - 2);
+    int endPage = Math.Min(totalPages, startPage + maxPagesToShow - 1);
+
+    //Justera vilka sidor som visas på slutet
+    if (endPage - startPage < maxPagesToShow - 1)
+    {
+        startPage = Math.Max(1, endPage - maxPagesToShow + 1);
+    }
 }
 
 <h1>Dyklogg</h1>
 
 <div class="page-container">
     <div class="table-tools">
+        <form method="get" class="dive-filter-form">
+            <select name="groupId" asp-items="ViewBag.Groups" onchange="this.form.submit()">
+                <option value="">Alla grupper</option>
+            </select>
+            <select name="personId" asp-items="ViewBag.Persons" onchange="this.form.submit()">
+                <option value="">Alla personer</option>
+            </select>
+            <select name="divePurposeId" asp-items="ViewBag.Purposes" onchange="this.form.submit()">
+                <option value="">Alla syften</option>
+            </select>
+        </form>
         <a asp-action="Create" class="table-btn add-btn">Nytt dyk</a>
     </div>
 
@@ -53,7 +78,7 @@
                             @if (diveLeader != null)
                             {
                                 @($"{diveLeader.Signature} - ")
-                                <i>@($"{diveLeader.Name}")</i>
+                                @($"{diveLeader.Name}")
                             }
                         </td>
 
@@ -62,7 +87,7 @@
                             {
                                 foreach (var d in divers)
                                 {
-                                    <div>@($"{d.Signature} - ")<i>@($"{d.Name}")</i></div>
+                                    <div>@($"{d.Signature} - ")@($"{d.Name}")</div>
                                 }
                             }
                         </td>
@@ -71,7 +96,7 @@
                             @if (diveSupport != null)
                             {
                                 @($"{diveSupport.Signature} - ")
-                                <i>@($"{diveSupport.Name}")</i>
+                                @($"{diveSupport.Name}")
                             }
                         </td>
 
@@ -92,6 +117,33 @@
             </tbody>
         </table>
     </div>
+    @if (ViewBag.TotalPages > 1)
+    {
+        <div class="pagination">
+            @if (currentPage > 1)
+            {
+                <a asp-action="Index" asp-route-page="1" asp-route-groupId="@ViewBag.GroupId"
+                   asp-route-personId="@ViewBag.PersonId" asp-route-divePurposeId="@ViewBag.DivePurposeId">«</a>
+                <a asp-action="Index" asp-route-page="@(currentPage - 1)" asp-route-groupId="@ViewBag.GroupId"
+                   asp-route-personId="@ViewBag.PersonId" asp-route-divePurposeId="@ViewBag.DivePurposeId">‹</a>
+            }
+
+            @for (int i = startPage; i <= endPage; i++)
+            {
+                <a asp-action="Index" asp-route-page="@i" asp-route-groupId="@ViewBag.GroupId"
+                   asp-route-personId="@ViewBag.PersonId" asp-route-divePurposeId="@ViewBag.DivePurposeId"
+                   class="@(currentPage == i ? "active-page" : "")">@i</a>
+            }
+
+            @if (currentPage < totalPages)
+            {
+                <a asp-action="Index" asp-route-page="@(currentPage + 1)" asp-route-groupId="@ViewBag.GroupId"
+                   asp-route-personId="@ViewBag.PersonId" asp-route-divePurposeId="@ViewBag.DivePurposeId">›</a>
+                <a asp-action="Index" asp-route-page="@totalPages" asp-route-groupId="@ViewBag.GroupId"
+                   asp-route-personId="@ViewBag.PersonId" asp-route-divePurposeId="@ViewBag.DivePurposeId">»</a>
+            }
+        </div>
+    }
 </div>
 
 <div class="map-padding">
