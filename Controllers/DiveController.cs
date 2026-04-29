@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using divelog.Data;
 using divelog.Models;
 using divelog.ViewModels;
+using divelog.Services;
 
 namespace divelog.Controllers
 {
@@ -490,6 +491,8 @@ namespace divelog.Controllers
             {
                 var exposureTime = CalculateExposureTime(diver.Depth!.Value, diver.DiveTime!.Value);
 
+                var nitrogenLoad = NitrogenLoadCalculator.Calculate(diver.Depth!.Value, exposureTime);
+
                 dive.DiveParticipants.Add(new DiveParticipant
                 {
                     PersonId = diver.DiverId!.Value,
@@ -497,6 +500,7 @@ namespace divelog.Controllers
                     Depth = diver.Depth,
                     ExposureTime = exposureTime,
                     DiveTime = diver.DiveTime,
+                    NitrogenLoad = nitrogenLoad,
                     AirPressureBefore = diver.AirPressureBefore,
                     AirPressureAfter = diver.AirPressureAfter
                 });
@@ -574,6 +578,8 @@ namespace divelog.Controllers
 
             var exposureTime = CalculateExposureTime(vm.Depth!.Value, vm.DiveTime!.Value);
 
+            var nitrogenLoad = NitrogenLoadCalculator.Calculate(vm.Depth!.Value, exposureTime);
+
             dive.DiveParticipants.Add(new DiveParticipant
             {
                 PersonId = vm.DiverId!.Value,
@@ -581,6 +587,7 @@ namespace divelog.Controllers
                 Depth = vm.Depth,
                 ExposureTime = exposureTime,
                 DiveTime = vm.DiveTime,
+                NitrogenLoad = nitrogenLoad,
                 AirPressureBefore = vm.AirPressureBefore,
                 AirPressureAfter = vm.AirPressureAfter
             });
@@ -674,6 +681,8 @@ namespace divelog.Controllers
             {
                 var exposureTime = CalculateExposureTime(diver.Depth!.Value, diver.DiveTime!.Value);
 
+                var nitrogenLoad = NitrogenLoadCalculator.Calculate(diver.Depth!.Value, exposureTime);
+
                 dive.DiveParticipants?.Add(new DiveParticipant
                 {
                     PersonId = diver.DiverId!.Value,
@@ -681,6 +690,7 @@ namespace divelog.Controllers
                     Depth = diver.Depth,
                     ExposureTime = exposureTime,
                     DiveTime = diver.DiveTime,
+                    NitrogenLoad = nitrogenLoad,
                     AirPressureBefore = diver.AirPressureBefore,
                     AirPressureAfter = diver.AirPressureAfter,
 
@@ -704,6 +714,8 @@ namespace divelog.Controllers
 
             var exposureTime = CalculateExposureTime(group.Depth!.Value, group.DiveTime!.Value);
 
+            var nitrogenLoad = NitrogenLoadCalculator.Calculate(group.Depth!.Value, exposureTime);
+
             //Lägger till vald dykare
             dive.DiveParticipants?.Add(new DiveParticipant
             {
@@ -712,6 +724,7 @@ namespace divelog.Controllers
                 Depth = group.Depth,
                 ExposureTime = exposureTime,
                 DiveTime = group.DiveTime,
+                NitrogenLoad = nitrogenLoad,
                 AirPressureBefore = group.AirPressureBefore,
                 AirPressureAfter = group.AirPressureAfter,
 

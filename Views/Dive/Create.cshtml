@@ -99,7 +99,9 @@
                 
                                 <label>Expositionstid: </label>
                                 <p class="exposition-time">0 min</p>
-                                
+
+                                <label>Kvävebelastning: </label>
+                                <p class="nitrogen-load">-</p>
 
                             </div>
                         }
@@ -189,6 +191,11 @@
                     <div class="form-row">
                         <label>Expositionstid: </label>
                         <p class="exposition-time">0 min</p>
+                    </div>
+
+                    <div class="form-row">
+                        <label>Kvävebelastning: </label>
+                        <p class="nitrogen-load">-</p>
                     </div>
 
                     @if (i > 0)
@@ -338,6 +345,12 @@
                 <label>Expositionstid: </label>
                 <p class="exposition-time">0 min</p>
             </div>
+
+            <div class="form-row">
+                <label>Kvävebelastning: </label>
+                <p class="nitrogen-load">-</p>
+            </div>
+
             <button type="button" class="form-btn remove-btn" onclick="removeGroup(${groupIndex})">Ta bort grupp</button>
 
         </div>
@@ -417,6 +430,9 @@
             <label>Expositionstid: </label>
             <p class="exposition-time">0 min</p>
 
+            <label>Kvävebelastning: </label>
+            <p class="nitrogen-load">-</p>
+
         </div>
     `;
     }
@@ -449,30 +465,6 @@
         document.getElementById(`pairGroup-${index}`).remove();
     }
 
-    //Räkna ut expositionstid utifrån djup och tid
-    function calculateExposure(depth, time) {
-        if (!depth || !time) return 0;
-
-        const depthFactor = Math.ceil(depth / 9);
-        return Math.max(0, time - depthFactor);
-    }
-
-    //Uppdatera expositionstid
-    function updateExposureFromCard(card) {
-        const depthInput = card.querySelector(".depth-input");
-        const timeInput = card.querySelector(".time-input");
-        const output = card.querySelector(".exposition-time");
-
-        if (!depthInput || !timeInput || !output) return;
-
-        const depth = parseFloat(depthInput.value);
-        const time = parseFloat(timeInput.value);
-
-        const exposure = calculateExposure(depth, time);
-
-        output.textContent = exposure + " min";
-    }
-
     //Vid sidinladdning
     window.onload = function () {
 
@@ -497,7 +489,7 @@
                         || e.target.closest(".diver-card");
 
                 if (card) {
-                    updateExposureFromCard(card);
+                    updateDiveCalculations(card);
                 }
             }
         });
@@ -505,6 +497,9 @@
 </script>
 
 @section Scripts {
+
+    <script src="~/js/dive-calculations.js"></script>
+
     <script>
 
         // Skapar kartan
