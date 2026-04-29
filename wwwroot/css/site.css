@@ -46,6 +46,7 @@ h3 {
   font-size: 2.0rem;
   margin-top: 1rem;
   margin-bottom: 1rem;
+  text-align: center;
 }
 
 h4 {
@@ -53,6 +54,15 @@ h4 {
   font-size: 1.6rem;
   margin-top: 1rem;
   margin-bottom: 1rem;
+  text-align: center;
+}
+
+h5 {
+  /*Textstorlek 16 som standard*/
+  font-size: 1.6rem;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  text-align: center;
 }
 
 /*Element i formulär ärver font från body */
