@@ -75,19 +75,20 @@
         <div class="pagination">
             @if (currentPage > 1)
             {
-                <a asp-action="Index" asp-route-page="1">«</a>
-                <a asp-action="Index" asp-route-page="@(currentPage - 1)">‹</a>
+                <a asp-action="Index" asp-route-page="1" asp-route-groupId="@ViewBag.GroupId">«</a>
+                <a asp-action="Index" asp-route-page="@(currentPage - 1)" asp-route-groupId="@ViewBag.GroupId">‹</a>
             }
 
             @for (int i = startPage; i <= endPage; i++)
             {
-                <a asp-action="Index" asp-route-page="@i" class="@(currentPage == i ? "active-page" : "")">@i</a>
+                <a asp-action="Index" asp-route-page="@i" asp-route-groupId="@ViewBag.GroupId"
+                   class="@(currentPage == i ? "active-page" : "")">@i</a>
             }
 
             @if (currentPage < totalPages)
             {
-                <a asp-action="Index" asp-route-page="@(currentPage + 1)">›</a>
-                <a asp-action="Index" asp-route-page="@totalPages">»</a>
+                <a asp-action="Index" asp-route-page="@(currentPage + 1)" asp-route-groupId="@ViewBag.GroupId">›</a>
+                <a asp-action="Index" asp-route-page="@totalPages" asp-route-groupId="@ViewBag.GroupId">»</a>
             }
         </div>
     }
