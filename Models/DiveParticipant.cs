@@ -10,7 +10,7 @@ public class DiveParticipant
     public double? Depth { get; set; }
     public int? DiveTime { get; set; }
     public int? ExposureTime { get; set; }
-    public double? NitrogenLoad { get; set; }
+    public string? NitrogenLoad { get; set; }
 
     //Luftförbrukning vid pardyk
     public int? AirPressureBefore { get; set; }
