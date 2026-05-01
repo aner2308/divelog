@@ -13,7 +13,7 @@ public class Dive
     public int? DivePurposeId { get; set; }
     public DivePurpose? DivePurpose { get; set; }
     //Lista som innehåller alla deltagare kopplade till ett dyk
-    public ICollection<DiveParticipant>? DiveParticipants { get; set; } = new List<DiveParticipant>();
+    public ICollection<DiveParticipant> DiveParticipants { get; set; } = new List<DiveParticipant>();
 }
 
 public enum DiveType
