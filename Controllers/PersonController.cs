@@ -339,7 +339,7 @@ namespace divelog.Controllers
         }
 
         // POST: Person/Delete/5
-        //Ta bort person från databas
+        //Markera person som borttagen i databasen
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
@@ -349,8 +349,8 @@ namespace divelog.Controllers
 
             if (person != null)
             {
-                //Ta bort personen
-                _context.Persons.Remove(person);
+                //Ta bort personen (soft delete)
+                 person.IsDeleted = true;
             }
 
             //Sparar ändringar
