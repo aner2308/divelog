@@ -32,6 +32,9 @@ namespace divelog.Controllers
                                 .Include(p => p.Group)
                                 .AsQueryable();
 
+            //Filtrera bort raderade
+            query = query.Where(p => !p.IsDeleted);
+
             //Filtrera på grupp om groupId är valt
             if (groupId.HasValue)
             {
@@ -350,7 +353,7 @@ namespace divelog.Controllers
             if (person != null)
             {
                 //Ta bort personen (soft delete)
-                 person.IsDeleted = true;
+                person.IsDeleted = true;
             }
 
             //Sparar ändringar
