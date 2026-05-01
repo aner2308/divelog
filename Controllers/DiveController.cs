@@ -150,12 +150,18 @@ namespace divelog.Controllers
                     persons
                     .OrderBy(p => p.Name)
                     .ToList()
-                    .Select(p => new
+                    .Select(p =>
                     {
-                        p.Id,
-                        DisplayName = (p.Name ?? "").Length > 25
-                        ? $"{p.Signature} - {p.Name.Substring(0, 20)}..."
-                        : $"{p.Signature} - {p.Name}"
+                        var name = p.Name ?? "";
+
+                        return new
+                        {
+                            p.Id,
+                            DisplayName = (p.Name ?? "").Length > 25
+                                ? $"{p.Signature} - {name.Substring(0, 20)}..."
+                                : $"{p.Signature} - {name}" 
+                        };
+                        
                     }),
                     "Id",
                     "DisplayName",
@@ -313,7 +319,7 @@ namespace divelog.Controllers
 
                     ids.AddRange(pairGroup.Divers
                         .Where(d => d.DiverId.HasValue)
-                        .Select(d => d.DiverId.Value));
+                        .Select(d => d.DiverId!.Value));
 
                     if (ids.Count != ids.Distinct().Count())
                     {
@@ -574,7 +580,7 @@ namespace divelog.Controllers
             });
 
             // Lägger till dykare
-            foreach (var diver in vm.Divers)
+            foreach (var diver in vm.Divers!)
             {
                 var exposureTime = CalculateExposureTime(diver.Depth!.Value, diver.DiveTime!.Value);
 

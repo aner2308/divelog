@@ -49,7 +49,7 @@
             <option value="">Välj dykledare</option>
             @foreach (var person in Model.DiveLeaders)
             {
-                <option value="@person.Id">@person.Signature @person.Name</option>
+                <option value="@person.Id">@person.Signature - @person.Name</option>
             }
         </select>
     </div>
@@ -80,7 +80,7 @@
                                     <option value="">Välj dykare</option>
                                     @foreach (var person in Model.Divers)
                                     {
-                                        <option value="@person.Id">@person.Signature @person.Name</option>
+                                        <option value="@person.Id">@person.Signature - @person.Name</option>
                                     }
                                 </select>
 
@@ -152,7 +152,7 @@
                             <option value="">Välj dykare</option>
                             @foreach (var person in Model.Divers)
                             {
-                                <option value="@person.Id">@person.Signature @person.Name</option>
+                                <option value="@person.Id">@person.Signature - @person.Name</option>
                             }
                         </select>
                     </div>
@@ -163,7 +163,7 @@
                             <option value="">Välj dykskötare</option>
                             @foreach (var person in Model.SurfaceSupports)
                             {
-                                <option value="@person.Id">@person.Signature @person.Name</option>
+                                <option value="@person.Id">@person.Signature - @person.Name</option>
                             }
                         </select>
                     </div>
@@ -305,7 +305,7 @@
                     <option value="">Välj dykare</option>
                     @foreach (var person in Model.Divers)
                     {
-                        <option value="@person.Id">@person.Signature @person.Name</option>
+                        <option value="@person.Id">@person.Signature - @person.Name</option>
                     }
                 </select>
             </div>
@@ -316,7 +316,7 @@
                     <option value="">Välj dykskötare</option>
                     @foreach (var person in Model.SurfaceSupports)
                     {
-                        <option value="@person.Id">@person.Signature @person.Name</option>
+                        <option value="@person.Id">@person.Signature - @person.Name</option>
                     }
                 </select>
             </div>
@@ -411,7 +411,7 @@
                 <option value="">Välj dykare</option>
                 @foreach (var person in Model.Divers)
                 {
-                    <option value="@person.Id">@person.Signature @person.Name</option>
+                    <option value="@person.Id">@person.Signature - @person.Name</option>
                 }
             </select>
             
