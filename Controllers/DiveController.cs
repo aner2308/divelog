@@ -35,15 +35,15 @@ namespace divelog.Controllers
         private void PopulateDropdowns(CreateDiveViewModel vm)
         {
             vm.Divers = SortPersons(_context.Persons
-                .Where(p => p.PersonRoles.Any(r => r.DiveRoleId == 1))
+                .Where(p => !p.IsDeleted && p.PersonRoles.Any(r => r.DiveRoleId == 1))
                 .ToList());
 
             vm.DiveLeaders = SortPersons(_context.Persons
-                .Where(p => p.PersonRoles.Any(r => r.DiveRoleId == 2))
+                .Where(p => !p.IsDeleted && p.PersonRoles.Any(r => r.DiveRoleId == 2))
                 .ToList());
 
             vm.SurfaceSupports = SortPersons(_context.Persons
-                .Where(p => p.PersonRoles.Any(r => r.DiveRoleId == 3))
+                .Where(p => !p.IsDeleted && p.PersonRoles.Any(r => r.DiveRoleId == 3))
                 .ToList());
 
             vm.DivePurposes = _context.DivePurposes.ToList();
@@ -52,12 +52,17 @@ namespace divelog.Controllers
         //Dropdowns vid redigering av pardyk
         private void PopulateBuddyEditDropdowns(EditBuddyDiveViewModel vm)
         {
+            var selectedDiversIds = vm.Divers
+            .Where(d => d.DiverId.HasValue)
+            .Select(d => d.DiverId!.Value)
+            .ToList();
+
             vm.AvailableDivers = SortPersons(_context.Persons
-                .Where(p => p.PersonRoles.Any(r => r.DiveRoleId == 1))
+                .Where(p => (!p.IsDeleted && p.PersonRoles.Any(r => r.DiveRoleId == 1)) || (selectedDiversIds.Contains(p.Id) && p.PersonRoles.Any(r => r.DiveRoleId == 1)) || (p.Id == vm.DiveLeaderId && p.PersonRoles.Any(r => r.DiveRoleId == 1)))
                 .ToList());
 
             vm.DiveLeaders = SortPersons(_context.Persons
-                .Where(p => p.PersonRoles.Any(r => r.DiveRoleId == 2))
+                .Where(p => (!p.IsDeleted && p.PersonRoles.Any(r => r.DiveRoleId == 2)) || (selectedDiversIds.Contains(p.Id) && p.PersonRoles.Any(r => r.DiveRoleId == 2)) || (p.Id == vm.DiveLeaderId && p.PersonRoles.Any(r => r.DiveRoleId == 2)))
                 .ToList());
 
             vm.DivePurposes = _context.DivePurposes.ToList();
@@ -67,15 +72,15 @@ namespace divelog.Controllers
         private void PopulateSurfaceEditDropdowns(EditSurfaceSupportDiveViewModel vm)
         {
             vm.AvailableDivers = SortPersons(_context.Persons
-                .Where(p => p.PersonRoles.Any(r => r.DiveRoleId == 1))
+                .Where(p => (!p.IsDeleted && p.PersonRoles.Any(r => r.DiveRoleId == 1)) || (p.Id == vm.DiverId && p.PersonRoles.Any(r => r.DiveRoleId == 1)) || (p.Id == vm.DiveLeaderId && p.PersonRoles.Any(r => r.DiveRoleId == 1)) || (p.Id == vm.SurfaceSupportId && p.PersonRoles.Any(r => r.DiveRoleId == 1)))
                 .ToList());
 
             vm.DiveLeaders = SortPersons(_context.Persons
-                .Where(p => p.PersonRoles.Any(r => r.DiveRoleId == 2))
+                .Where(p => (!p.IsDeleted && p.PersonRoles.Any(r => r.DiveRoleId == 2)) || (p.Id == vm.DiverId && p.PersonRoles.Any(r => r.DiveRoleId == 2)) || (p.Id == vm.DiveLeaderId && p.PersonRoles.Any(r => r.DiveRoleId == 2)) || (p.Id == vm.SurfaceSupportId && p.PersonRoles.Any(r => r.DiveRoleId == 2)))
                 .ToList());
 
             vm.SurfaceSupports = SortPersons(_context.Persons
-                .Where(p => p.PersonRoles.Any(r => r.DiveRoleId == 3))
+                .Where(p => (!p.IsDeleted && p.PersonRoles.Any(r => r.DiveRoleId == 3)) || (p.Id == vm.DiverId && p.PersonRoles.Any(r => r.DiveRoleId == 3)) || (p.Id == vm.DiveLeaderId && p.PersonRoles.Any(r => r.DiveRoleId == 3)) || (p.Id == vm.SurfaceSupportId && p.PersonRoles.Any(r => r.DiveRoleId == 3)))
                 .ToList());
 
             vm.DivePurposes = _context.DivePurposes.ToList();
@@ -159,9 +164,9 @@ namespace divelog.Controllers
                             p.Id,
                             DisplayName = (p.Name ?? "").Length > 25
                                 ? $"{p.Signature} - {name.Substring(0, 20)}..."
-                                : $"{p.Signature} - {name}" 
+                                : $"{p.Signature} - {name}"
                         };
-                        
+
                     }),
                     "Id",
                     "DisplayName",
