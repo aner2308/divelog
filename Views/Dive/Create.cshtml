@@ -17,6 +17,20 @@
     <div asp-validation-summary="All" class="error"></div>
 
     <!-- GEMENSAM INFO -->
+    <!-- TIMERS -->
+    <div id="surface-timer-wrapper">
+        <p>Total Dyktid</p>
+        <div id="surface-timer-container"></div>
+    </div>
+    <div id="ascent-timer-wrapper">
+        <p>Uppstigningstid</p>
+        <div id="ascent-timer-container"></div>
+    </div>
+    <div id="buddy-timer-wrapper" style="display:none;">
+        <p>Total Dyktid</p>
+        <div id="buddy-timer-container"></div>
+    </div>
+
     <div class="form-row">
         <label asp-for="Date">Datum: </label>
         <input asp-for="Date" type="date" class="date-input" />
@@ -88,10 +102,10 @@
                                 <input asp-for="PairGroups[@pairIndex].Divers[@diverIndex].AirPressureBefore" />
 
                                 <label>Djup: </label>
-                                <input asp-for="PairGroups[@pairIndex].Divers[@diverIndex].Depth" class="depth-input"/>
+                                <input asp-for="PairGroups[@pairIndex].Divers[@diverIndex].Depth" class="depth-input" />
 
                                 <label>Dyktid: </label>
-                                <input asp-for="PairGroups[@pairIndex].Divers[@diverIndex].DiveTime" class="time-input"/>
+                                <input asp-for="PairGroups[@pairIndex].Divers[@diverIndex].DiveTime" class="time-input" />
 
                                 <label>Lufttryck efter: </label>
                                 <input asp-for="PairGroups[@pairIndex].Divers[@diverIndex].AirPressureAfter" />
@@ -108,12 +122,13 @@
 
                     </div>
 
-                    <button type="button" class="form-btn" onclick="addDiverToPair(@pairIndex)" id="addThirdDiver-@pairIndex">
+                    <button type="button" class="form-btn" onclick="addDiverToPair(@pairIndex)"
+                            id="addThirdDiver-@pairIndex">
                         + Lägg till tredje dykare
                     </button>
 
-                    <button type="button" class="form-btn remove-btn" onclick="removeThirdDiver(@pairIndex)" id="removeThirdDiver-@pairIndex"
-                            style="display:none;">
+                    <button type="button" class="form-btn remove-btn" onclick="removeThirdDiver(@pairIndex)"
+                            id="removeThirdDiver-@pairIndex" style="display:none;">
                         Ta bort tredje dykare
                     </button>
 
@@ -180,12 +195,12 @@
 
                     <div class="form-row">
                         <label>Djup: </label>
-                        <input asp-for="SurfaceSupportGroups[@i].Depth" class="depth-input"/>
+                        <input asp-for="SurfaceSupportGroups[@i].Depth" class="depth-input" />
                     </div>
 
                     <div class="form-row">
                         <label>Dyktid: </label>
-                        <input asp-for="SurfaceSupportGroups[@i].DiveTime" class="time-input"/>
+                        <input asp-for="SurfaceSupportGroups[@i].DiveTime" class="time-input" />
                     </div>
 
                     <div class="form-row">
@@ -265,8 +280,14 @@
         //Gör den valda fliken aktiv 
         setActiveTab(button);
 
+        //Visa rätt flik
         document.getElementById("buddyDiveSection").style.display = "block";
         document.getElementById("surfaceSupportSection").style.display = "none";
+
+        //Visa rätt timer
+        document.getElementById("buddy-timer-wrapper").style.display = "block";
+        document.getElementById("surface-timer-wrapper").style.display = "none";
+        document.getElementById("ascent-timer-wrapper").style.display = "none";
 
         setSectionEnabled("buddyDiveSection", true);
         setSectionEnabled("surfaceSupportSection", false);
@@ -279,8 +300,14 @@
         //Gör den valda fliken aktiv
         setActiveTab(button);
 
+        //Visa rätt flik
         document.getElementById("buddyDiveSection").style.display = "none";
         document.getElementById("surfaceSupportSection").style.display = "block";
+
+        //Visa rätt timer
+        document.getElementById("buddy-timer-wrapper").style.display = "none";
+        document.getElementById("surface-timer-wrapper").style.display = "block";
+        document.getElementById("ascent-timer-wrapper").style.display = "block";
 
         setSectionEnabled("buddyDiveSection", false);
         setSectionEnabled("surfaceSupportSection", true);
@@ -291,6 +318,9 @@
     function addGroup() {
 
         if (document.querySelectorAll(".surface-support-card").length >= 4) return;
+
+        //Sparar aktuellt index för denna grupp så att ID:n och timers inte påverkas när index ökas
+        let currentIndex = groupIndex;
 
         //Skapar nytt div-element
         let newGroup = document.createElement("div");
@@ -358,15 +388,30 @@
 
         //Lägger in skapad div som child-element
         groupsContainer.appendChild(newGroup.firstElementChild);
+
+        //Skapar timer-rad kopplad till grupp
+        createTimer("surface-timer-container", `Dyk ${currentIndex + 1}`, `group-${currentIndex}`, "dive");
+        createTimer("ascent-timer-container", `Uppstigning ${currentIndex + 1}`, `group-${currentIndex}`, "ascent");
+
+        //Uppdatera labels för timers
+        updateSurfaceTimerLabels();
+
         //Ökar index
         groupIndex++;
     }
 
+    //Ta bort grupp och tillhörande timer
     function removeGroup(index) {
+        const groupId = `group-${index}`;
         document.getElementById(`group-${index}`).remove();
+        removeTimerByGroup(groupId);
+        updateSurfaceTimerLabels();
     }
 
     function addPairGroup() {
+
+        //Sparar aktuellt index för denna grupp så att ID:n och timers inte påverkas när index ökas
+        let currentIndex = pairIndex;
 
         //Skapar nytt div-element
         let newGroup = document.createElement("div");
@@ -398,8 +443,15 @@
     `;
         //Lägger in skapad div som child-element
         pairGroupsContainer.appendChild(newGroup.firstElementChild);
-        //Ökar index
+
+        //Skapar timer
+        createTimer("buddy-timer-container", `Dykpar`, `pairGroup-${currentIndex}`);
+
+        //Öka index
         pairIndex++;
+
+        renumberPairGroups();
+        updateBuddyTimerLabels();
     }
 
     function generateDiverHtml(pairGroupIndex, diverIndex) {
@@ -445,10 +497,19 @@
 
         if (diverCount >= 3) return;
 
-        container.innerHTML += generateDiverHtml(pairGroupIndex, diverCount);
+        let wrapper = document.createElement("div");
+
+        wrapper.innerHTML = generateDiverHtml(
+            pairGroupIndex,
+            diverCount
+        );
+
+        container.appendChild(wrapper.firstElementChild);
 
         document.getElementById(`addThirdDiver-${pairGroupIndex}`).style.display = "none";
         document.getElementById(`removeThirdDiver-${pairGroupIndex}`).style.display = "inline-block";
+
+        updateBuddyTimerLabels();
     }
 
     function removeThirdDiver(pairGroupIndex) {
@@ -459,10 +520,18 @@
 
         document.getElementById(`addThirdDiver-${pairGroupIndex}`).style.display = "inline-block";
         document.getElementById(`removeThirdDiver-${pairGroupIndex}`).style.display = "none";
+
+        updateBuddyTimerLabels();
     }
 
+    //Ta bort grupp och tillhörande timer
     function removePairGroup(index) {
-        document.getElementById(`pairGroup-${index}`).remove();
+        const groupId = `pairGroup-${index}`;
+        removeTimerByGroup(groupId);
+        const el = document.getElementById(groupId);
+        if (el) el.remove();
+        renumberPairGroups();
+        updateSurfaceTimerLabels();
     }
 
     //Vid sidinladdning
@@ -470,6 +539,13 @@
 
         const diveType = document.getElementById("DiveType").value;
         const buttons = document.querySelectorAll(".tabs-btn button");
+
+        //Skapa timers för befintliga grupper
+        initExistingTimers();
+
+        //Uppdatera labels för timers
+        updateSurfaceTimerLabels();
+        updateBuddyTimerLabels();
 
         //Om användaren redan har valt pardyk så uppdateras sidan på den fliken
         if (diveType === "1") {
@@ -484,13 +560,21 @@
             if (e.target.classList.contains("depth-input") ||
                 e.target.classList.contains("time-input")) {
 
-                // hitta rätt kort (funkar för båda typer)
-                const card = e.target.closest(".surface-support-card") 
-                        || e.target.closest(".diver-card");
+                //Hitta rätt kort (funkar för båda typer)
+                const card = e.target.closest(".surface-support-card")
+                    || e.target.closest(".diver-card");
 
                 if (card) {
                     updateDiveCalculations(card);
                 }
+            }
+        });
+
+        document.addEventListener("change", function (e) {
+
+            if (e.target.matches("select[name$='.DiverId']")) {
+                updateSurfaceTimerLabels();
+                updateBuddyTimerLabels();
             }
         });
     };
@@ -499,57 +583,58 @@
 @section Scripts {
 
     <script src="~/js/dive-calculations.js"></script>
+    <script src="~/js/dive-timer.js"></script>
 
     <script>
 
-        // Skapar kartan
+        //Skapar kartan
         var map = L.map('map');
 
-        // OpenStreetMap tiles
+        //OpenStreetMap tiles
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '&copy; OpenStreetMap'
         }).addTo(map);
 
         var marker;
 
-        // Om användaren har platstjänster aktiverade
+        //Om användaren har platstjänster aktiverade
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(function (position) {
 
                 var userLat = position.coords.latitude;
                 var userLng = position.coords.longitude;
 
-                // Zooma till användarens position
+                //Zooma till användarens position
                 map.setView([userLat, userLng], 15);
 
             }, function () {
                 //Om man inte har platstjänst aktiverad visas Västerås som default
-                map.setView([59.595, 16.56], 13);   
+                map.setView([59.595, 16.56], 13);
             });
         } else {
             map.setView([59.595, 16.56], 13);
         }
 
-        // När användaren klickar på kartan
+        //När användaren klickar på kartan
         map.on('click', function (e) {
 
-            // Riktiga nummer för Leaflet
+            //Riktiga nummer för Leaflet
             var lat = e.latlng.lat;
             var lng = e.latlng.lng;
 
-            // Formatterade värden för ASP.NET
+            //Formatterade värden för ASP.NET
             var latForInput = lat.toFixed(6).replace('.', ',');
             var lngForInput = lng.toFixed(6).replace('.', ',');
 
-            // Ta bort gammal marker
+            //Ta bort gammal marker
             if (marker) {
                 map.removeLayer(marker);
             }
 
-            // Lägg till ny marker (MÅSTE vara riktiga nummer)
+            //Lägg till ny marker (MÅSTE vara riktiga nummer)
             marker = L.marker([lat, lng]).addTo(map);
 
-            // Spara till hidden inputs (med komma)
+            //Spara till hidden inputs (med komma)
             document.getElementById("Latitude").value = latForInput;
             document.getElementById("Longitude").value = lngForInput;
         });
