@@ -8,9 +8,11 @@ using Microsoft.EntityFrameworkCore;
 using divelog.Data;
 using divelog.Models;
 using divelog.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 
 namespace divelog.Controllers
 {
+    [Authorize]
     public class PersonController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -99,6 +101,7 @@ namespace divelog.Controllers
 
         // GET: Person/Create
         //Förbereder data som behövs för formuläret
+        [Authorize(Roles = "Admin")]
         public IActionResult Create()
         {
             //Skapar en ViewModel och fyller den med alla roller
@@ -191,6 +194,7 @@ namespace divelog.Controllers
 
         // GET: Person/Edit/5
         //Förbereder data som behövs för formuläret
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(int? id)
         {
             //Kontrollerar om id finns
@@ -318,6 +322,7 @@ namespace divelog.Controllers
 
         // GET: Person/Delete/5
         //Hämta person på sidan delete
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int? id)
         {
             //Om id inte finns

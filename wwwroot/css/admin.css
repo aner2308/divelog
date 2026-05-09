@@ -1,0 +1,187 @@
+.success-message {
+    background-color: #d4edda;
+    color: #155724;
+    padding: 1rem;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+}
+
+.user-form {
+    max-width: 900px;
+    width: 90vw;
+    margin: 50px auto 2rem auto;
+    padding: 2rem;
+    background: #9DB2BF;
+    border-radius: 14px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.25);
+    color: white;
+    display: flex;
+    flex-direction: column;
+}
+
+.user-form label {
+    width: 50%;
+    text-align: right;
+    margin-right: 0.5rem;
+    padding-left: 0.5rem;
+}
+
+.user-form input,
+.user-form select {
+    padding: 8px 10px;
+    border-radius: 6px;
+    border: none;
+}
+
+.user-form input {
+    max-width: 45%;
+    width: 100%;
+}
+
+.user-form select {
+    cursor: pointer;
+}
+
+.auth-card {
+    max-width: 500px;
+    margin: 3rem auto;
+}
+
+.checkbox-row input {
+    width: auto;
+    margin: 0;
+}
+
+.full-width-btn {
+    width: 100%;
+    margin-top: 1rem;
+}
+
+.update-user-btn {
+    display: block;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    background-color: #E17100;
+    color: white;
+    border: none;
+    box-shadow: 5px 5px 0px rgba(100, 100, 100, 0.7);
+    min-height: 42px;
+    width: 250px;
+    padding: 10px 20px;
+    margin: 20px auto 0 auto;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+    font-size: 1.4rem;
+    font-weight: 600;
+    border-radius: 2px;
+}
+
+.admin-users-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    margin-top: 2rem;
+}
+
+.admin-user-card {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 2rem;
+    text-align: center;
+}
+
+.admin-user-info {
+    margin: 0 auto;
+    font-size: 1em;
+}
+
+.admin-user-info h4 {
+    margin-bottom: 0.5rem;
+}
+
+.admin-user-info p {
+    margin: 0;
+}
+
+.admin-user-actions {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.page-header {
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin: 0 auto;
+}
+
+.delete-card {
+    max-width: 800px;
+    margin: 2rem auto;
+}
+
+.delete-card p {
+    margin-bottom: 0.5rem;
+}
+
+.delete-card h4 {
+    margin-bottom: 1.5rem;
+}
+
+.admin-user-actions {
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+    flex-wrap: wrap;
+    width: 200px;
+}
+
+.user-form-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    background-color: #E17100;
+    color: white;
+    border: none;
+    box-shadow: 5px 5px 0px rgba(100, 100, 100, 0.7);
+    min-height: 42px;
+    width: 100%;
+    padding: 10px 20px;
+    margin: 0.5rem;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+    font-size: 1.4rem;
+    font-weight: 600;
+    border-radius: 2px;
+}
+
+.user-form-btn:hover {
+    transform: scale(1.05);
+}
+
+.user-form-btn:active {
+    transform: scale(0.98);
+}
+
+.user-form-btn.remove-user-btn {
+    background-color: #dc0400;
+}
+
+@media (max-width: 550px) {
+    .admin-user-card {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .update-user-btn {
+        width: 200px;
+    }
+}

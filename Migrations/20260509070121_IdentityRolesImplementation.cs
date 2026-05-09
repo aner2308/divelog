@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace divelog.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class IdentityRolesImplementation : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -290,7 +290,7 @@ namespace divelog.Migrations
                     Depth = table.Column<double>(type: "REAL", nullable: true),
                     DiveTime = table.Column<int>(type: "INTEGER", nullable: true),
                     ExposureTime = table.Column<int>(type: "INTEGER", nullable: true),
-                    NitrogenLoad = table.Column<double>(type: "REAL", nullable: true),
+                    NitrogenLoad = table.Column<string>(type: "TEXT", nullable: true),
                     AirPressureBefore = table.Column<int>(type: "INTEGER", nullable: true),
                     AirPressureAfter = table.Column<int>(type: "INTEGER", nullable: true)
                 },

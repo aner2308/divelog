@@ -284,8 +284,8 @@ namespace divelog.Migrations
                     b.Property<int?>("ExposureTime")
                         .HasColumnType("INTEGER");
 
-                    b.Property<double?>("NitrogenLoad")
-                        .HasColumnType("REAL");
+                    b.Property<string>("NitrogenLoad")
+                        .HasColumnType("TEXT");
 
                     b.Property<int>("PersonId")
                         .HasColumnType("INTEGER");

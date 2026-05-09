@@ -11,8 +11,8 @@ using divelog.Data;
 namespace divelog.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260423080343_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20260509070121_IdentityRolesImplementation")]
+    partial class IdentityRolesImplementation
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -287,8 +287,8 @@ namespace divelog.Migrations
                     b.Property<int?>("ExposureTime")
                         .HasColumnType("INTEGER");
 
-                    b.Property<double?>("NitrogenLoad")
-                        .HasColumnType("REAL");
+                    b.Property<string>("NitrogenLoad")
+                        .HasColumnType("TEXT");
 
                     b.Property<int>("PersonId")
                         .HasColumnType("INTEGER");

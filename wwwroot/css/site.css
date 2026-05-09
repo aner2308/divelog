@@ -77,6 +77,12 @@ button {
   font-size: 1.6rem;
 }
 
+.btn-link {
+  background: none;
+  color: white;
+  border: none;
+}
+
 .page-wrapper {
   background-color: #27374D;
   min-height: 100vh;

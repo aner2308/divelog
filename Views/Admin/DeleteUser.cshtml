@@ -1,0 +1,45 @@
+@model IdentityUser
+
+@{
+    ViewData["Title"] = "Ta bort användare";
+}
+
+<div class="user-form">
+
+    <div class="page-header">
+        <h2>Ta bort användare</h2>
+    </div>
+
+    <div class="admin-user-card delete-card">
+
+        <div class="admin-user-info">
+
+            <p>
+                Är du säker på att du vill ta bort följande användare?
+            </p>
+
+            <h4>@Model.Email</h4>
+
+        </div>
+
+        <form method="post" class="admin-user-actions">
+
+            <input type="hidden" asp-for="Id" />
+
+            <button type="submit" class="user-form-btn remove-user-btn">
+                Ta bort användare
+            </button>
+
+            <a asp-action="Index" class="user-form-btn">
+                Avbryt
+            </a>
+
+        </form>
+
+    </div>
+
+</div>
+
+<div class="navigate-back">
+    <a asp-action="Index">Tillbaka till adminsidan</a>
+</div>

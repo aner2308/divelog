@@ -38,7 +38,10 @@
         </dl>
     </div>
     <div class="person-actions">
-        <a asp-action="Edit" class="person-btn" asp-route-id="@Model?.Id">Redigera</a>
+        @if (User.IsInRole("Admin"))
+        {
+            <a asp-action="Edit" class="person-btn" asp-route-id="@Model?.Id">Redigera</a>
+        }
     </div>
 </div>
 <div class="navigate-back">
