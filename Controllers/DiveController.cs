@@ -9,9 +9,11 @@ using divelog.Data;
 using divelog.Models;
 using divelog.ViewModels;
 using divelog.Services;
+using Microsoft.AspNetCore.Authorization;
 
 namespace divelog.Controllers
 {
+    [Authorize]
     public class DiveController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -216,6 +218,7 @@ namespace divelog.Controllers
 
         // GET: Dive/Create
         //Inladdning av registreringssidan för nya dyk
+        [Authorize(Roles = "Admin,Editor")]
         public IActionResult Create()
         {
             var vm = new CreateDiveViewModel
@@ -420,6 +423,7 @@ namespace divelog.Controllers
         }
 
         // GET: Dive/Edit/5
+        [Authorize(Roles = "Admin,Editor")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -701,7 +705,7 @@ namespace divelog.Controllers
         }
 
         // GET: Dive/Delete/5
-        // GET: Dive/Delete/5
+        [Authorize(Roles = "Admin,Editor")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)

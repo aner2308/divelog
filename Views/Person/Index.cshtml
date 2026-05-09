@@ -27,7 +27,10 @@
                 <option value="">Alla grupper</option>
             </select>
         </form>
-        <a asp-action="Create" class="table-btn add-btn">Ny person</a>
+        @if (User.IsInRole("Admin"))
+        {
+            <a asp-action="Create" class="table-btn add-btn">Ny person</a>
+        }
     </div>
     <div class="table-container">
         <table class="person-table">
@@ -60,9 +63,15 @@
                         </td>
                         <td>
                             <div class="button-wrapper">
-                                <a asp-action="Edit" asp-route-id="@item.Id" class="table-btn">Redigera</a>
+                                @if (User.IsInRole("Admin"))
+                                {
+                                    <a asp-action="Edit" asp-route-id="@item.Id" class="table-btn">Redigera</a>
+                                }
                                 <a asp-action="Details" asp-route-id="@item.Id" class="table-btn">Detaljer</a>
-                                <a asp-action="Delete" asp-route-id="@item.Id" class="table-btn">Ta bort</a>
+                                @if (User.IsInRole("Admin"))
+                                {
+                                    <a asp-action="Delete" asp-route-id="@item.Id" class="table-btn">Ta bort</a>
+                                }
                             </div>
                         </td>
                     </tr>

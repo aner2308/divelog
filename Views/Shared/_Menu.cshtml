@@ -15,10 +15,27 @@
     <ul class="nav-list" id="navList">
 
         <li><a asp-controller="Home" asp-action="Index">Start</a></li>
-        <li><a asp-controller="Dive" asp-action="Create">Nytt dyk</a></li>
-        <li><a asp-controller="Dive" asp-action="Index">Dyklogg</a></li>
-        <li><a asp-controller="Person" asp-action="Index">Personal</a></li>
+        @if (User.IsInRole("Editor") || User.IsInRole("Admin"))
+        {
+            <li><a asp-controller="Dive" asp-action="Create">Nytt dyk</a></li>
+        }
+        @if (User.IsInRole("Reader") || User.IsInRole("Editor") || User.IsInRole("Admin"))
+        {
+            <li><a asp-controller="Dive" asp-action="Index">Dyklogg</a></li>
+        }
+        @if (User.IsInRole("Reader") || User.IsInRole("Editor") || User.IsInRole("Admin"))
+        {
+            <li><a asp-controller="Person" asp-action="Index">Personal</a></li>
+        }
         <li><a asp-controller="Home" asp-action="About">Om oss</a></li>
+        @if (User.IsInRole("Admin"))
+        {
+            <li>
+                <a asp-controller="Admin" asp-action="Index">
+                    Adminsidan
+                </a>
+            </li>
+        }
         @if (User.Identity?.IsAuthenticated ?? false)
         {
             <li>

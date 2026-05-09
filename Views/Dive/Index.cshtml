@@ -34,7 +34,10 @@
                 <option value="">Alla syften</option>
             </select>
         </form>
-        <a asp-action="Create" class="table-btn add-btn">Nytt dyk</a>
+        @if (User.IsInRole("Admin") || User.IsInRole("Editor"))
+        {
+            <a asp-action="Create" class="table-btn add-btn">Nytt dyk</a>
+        }
     </div>
 
     <div class="table-container">
@@ -106,9 +109,15 @@
 
                         <td>
                             <div class="button-wrapper">
-                                <a asp-action="Edit" asp-route-id="@dive.Id" class="table-btn">Redigera</a>
+                                @if (User.IsInRole("Admin") || User.IsInRole("Editor"))
+                                {
+                                    <a asp-action="Edit" asp-route-id="@dive.Id" class="table-btn">Redigera</a>
+                                }
                                 <a asp-action="Details" asp-route-id="@dive.Id" class="table-btn">Detaljer</a>
-                                <a asp-action="Delete" asp-route-id="@dive.Id" class="table-btn">Radera</a>
+                                @if (User.IsInRole("Admin") || User.IsInRole("Editor"))
+                                {
+                                    <a asp-action="Delete" asp-route-id="@dive.Id" class="table-btn">Radera</a>
+                                }
                             </div>
                         </td>
                     </tr>
@@ -154,51 +163,52 @@
 
     <script>
 
-    var dives = [
-         @foreach (var dive in Model) {
-            if (dive.Latitude >= -90 && dive.Latitude <= 90 && dive.Longitude >= -180 && dive.Longitude <= 180) 
+        var dives = [
+                 @foreach (var dive in Model)
             {
-                <text> {
-                    id: @dive.Id,
-                    lat: @dive.Latitude.ToString(System.Globalization.CultureInfo.InvariantCulture),
-                    lng: @dive.Longitude.ToString(System.Globalization.CultureInfo.InvariantCulture),
-                    location: "@dive.LocationName",
-                    date: "@dive.Date.ToString("yyyy-MM-dd")",
-                    },
-                </text>
+                if (dive.Latitude >= -90 && dive.Latitude <= 90 && dive.Longitude >= -180 && dive.Longitude <= 180)
+                {
+                    <text> {
+                            id: @dive.Id,
+                            lat: @dive.Latitude.ToString(System.Globalization.CultureInfo.InvariantCulture),
+                            lng: @dive.Longitude.ToString(System.Globalization.CultureInfo.InvariantCulture),
+                            location: "@dive.LocationName",
+                            date: "@dive.Date.ToString("yyyy-MM-dd")",
+                                                    },
+                    </text>
+                            }
             }
+            ];
+
+        var map = L.map('big-map');
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; OpenStreetMap'
+        }).addTo(map);
+
+        var markers = [];
+
+        //Lägger till popup med plats, datum och länk till dyk.
+        dives.forEach(function (dive) {
+
+            var marker = L.marker([dive.lat, dive.lng])
+                .addTo(map)
+                .bindPopup(`
+                        <strong>${dive.location}</strong><br>
+                        ${dive.date}<br>
+                        <a href="/Dive/Details/${dive.id}">Visa dyk</a>
+                    `);
+
+            markers.push(marker);
+        });
+
+        // Auto-zoom till alla markeringar
+        if (markers.length > 0) {
+            var group = L.featureGroup(markers);
+            map.fitBounds(group.getBounds().pad(0.2));
+        } else {
+            map.setView([59.595, 16.56], 13);
         }
-    ];
-
-    var map = L.map('big-map');
-
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; OpenStreetMap'
-    }).addTo(map);
-
-    var markers = [];
-
-    //Lägger till popup med plats, datum och länk till dyk.
-    dives.forEach(function(dive) {
-
-        var marker = L.marker([dive.lat, dive.lng])
-            .addTo(map)
-            .bindPopup(`
-                <strong>${dive.location}</strong><br>
-                ${dive.date}<br>
-                <a href="/Dive/Details/${dive.id}">Visa dyk</a>
-            `);
-
-        markers.push(marker);
-    });
-
-    // Auto-zoom till alla markeringar
-    if (markers.length > 0) {
-        var group = L.featureGroup(markers);
-        map.fitBounds(group.getBounds().pad(0.2));
-    } else {
-        map.setView([59.595, 16.56], 13);
-    }
 
     </script>
 }

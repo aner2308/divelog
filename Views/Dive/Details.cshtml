@@ -120,14 +120,14 @@
 
     <!-- Knappar -->
     <div class="details-button-wrapper">
-
-        <a asp-action="Edit" asp-route-id="@Model.Id" class="form-btn">
-            Redigera
-        </a>
-
-        <a asp-action="Delete" asp-route-id="@Model.Id" class="form-btn remove-btn">
-            Ta bort
-        </a>
+        @if (User.IsInRole("Admin") || User.IsInRole("Editor"))
+        {
+            <a asp-action="Edit" asp-route-id="@Model.Id" class="form-btn">Redigera</a>
+        }
+        @if (User.IsInRole("Admin") || User.IsInRole("Editor"))
+        {
+            <a asp-action="Delete" asp-route-id="@Model.Id" class="form-btn remove-btn">Redigera</a>
+        }
 
     </div>
 
