@@ -596,6 +596,15 @@
             attribution: '&copy; OpenStreetMap'
         }).addTo(map);
 
+        //Egen ikon
+        var customIcon = L.icon({
+            iconUrl: '/images/diver-marker.png',
+
+            iconSize: [40, 40],      // storlek på bilden
+            iconAnchor: [20, 40],    // punkt som pekar på platsen
+            popupAnchor: [0, -40]    // popup-position
+        });
+
         var marker;
 
         //Om användaren har platstjänster aktiverade
@@ -627,15 +636,15 @@
             var latForInput = lat.toFixed(6).replace('.', ',');
             var lngForInput = lng.toFixed(6).replace('.', ',');
 
-            //Ta bort gammal marker
+            //Tar bort gammal marker
             if (marker) {
                 map.removeLayer(marker);
             }
 
-            //Lägg till ny marker (MÅSTE vara riktiga nummer)
-            marker = L.marker([lat, lng]).addTo(map);
+            //Lägg till ny marker
+            marker = L.marker([lat, lng], {icon: customIcon}).addTo(map);
 
-            //Spara till hidden inputs (med komma)
+            //Spara till hidden inputs
             document.getElementById("Latitude").value = latForInput;
             document.getElementById("Longitude").value = lngForInput;
         });
