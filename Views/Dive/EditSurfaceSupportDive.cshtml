@@ -183,7 +183,16 @@
             attribution: '&copy; OpenStreetMap'
         }).addTo(map);
 
-        var marker = L.marker([lat, lng]).addTo(map);
+        //Egen ikon
+        var customIcon = L.icon({
+            iconUrl: '/images/diver-marker.png',
+
+            iconSize: [40, 40],      // storlek på bilden
+            iconAnchor: [20, 40],    // punkt som pekar på platsen
+            popupAnchor: [0, -40]    // popup-position
+        });
+
+        var marker = L.marker([lat, lng], {icon: customIcon}).addTo(map);
 
         // Flytta markering vid klick
         map.on('click', function (e) {
@@ -191,7 +200,7 @@
             var newLat = e.latlng.lat.toFixed(6);
             var newLng = e.latlng.lng.toFixed(6);
 
-            marker.setLatLng([newLat, newLng]);
+            marker.setLatLng([newLat, newLng], {icon: customIcon});
 
             // Byter ut punkt mot decimal för korrekt format
             document.getElementById("Latitude").value =
