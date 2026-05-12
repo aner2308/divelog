@@ -10,12 +10,12 @@ namespace divelog.ViewModels
 
         [Required]
         [DataType(DataType.Password)]
-        [Display(Name = "Nytt lösenord")]
+        [Display(Name = "Nytt lösenord:")]
         public string NewPassword { get; set; } = string.Empty;
 
         [Required]
         [DataType(DataType.Password)]
-        [Display(Name = "Bekräfta lösenord")]
+        [Display(Name = "Bekräfta lösenord:")]
         [Compare("NewPassword", ErrorMessage = "Lösenorden matchar inte")]
         public string ConfirmPassword { get; set; } = string.Empty;
     }

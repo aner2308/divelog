@@ -36,7 +36,6 @@ h1 {
 h2 {
   /*Textstorlek 24 som standard*/
   font-size: 2.4rem;
-  margin-top: 1rem;
   margin-bottom: 1rem;
   text-align: center;
 }
@@ -81,6 +80,11 @@ button {
   background: none;
   color: white;
   border: none;
+  cursor: pointer;
+}
+
+.btn-link:hover {
+  text-decoration: underline;
 }
 
 .page-wrapper {
@@ -88,6 +92,7 @@ button {
   min-height: 100vh;
   max-width: 1920px;
   margin: 0 auto;
+  padding: 0;
   display: flex;
   flex-direction: column;
 }
