@@ -4,7 +4,7 @@
     ViewData["Title"] = "Dykdetaljer";
 }
 
-<h2>Dykdetaljer</h2>
+<h1>Dykdetaljer</h1>
 
 @{
     var leader = Model.DiveParticipants?
@@ -49,7 +49,7 @@
             <dt>Typ av dyk:</dt>
             <dd>@Model.DivePurpose?.Name</dd>
 
-            <dt>Dykledare:</dt>
+            <dt>Dykarledare:</dt>
             <dd>
                 @if (leader != null)
                 {
@@ -57,14 +57,14 @@
                 }
                 else
                 {
-                    <span>Ingen dykledare registrerad</span>
+                    <span>Ingen dykarledare registrerad</span>
                 }
             </dd>
 
             
             @if (support != null)
             {
-                <dt>Dykskötare:</dt>
+                <dt>Dykarskötare:</dt>
                 <dd>@support.Person.Signature - @support.Person.Name</dd>
             }
             

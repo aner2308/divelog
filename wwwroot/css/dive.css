@@ -1,6 +1,6 @@
 .page-container {
-    padding-left: 2rem;
-    padding-right: 2rem;
+    padding-left: 1rem;
+    padding-right: 1rem;
 }
 
 /*Knappar ovanför tabell*/
@@ -175,10 +175,6 @@
 }
 
 /*DYKFORMULÄR SKAPA DYK - START*/
-.h2-tab {
-    text-align: center;
-}
-
 .tabs-btn {
     display: flex;
 }
@@ -210,10 +206,13 @@
     padding: 5rem 2rem 3rem 2rem;
     background: #9DB2BF;
     border-radius: 14px;
-    border-top-left-radius: 0px;
     box-shadow: 0 15px 35px rgba(0, 0, 0, 0.25);
     color: #fff;
     text-align: center;
+}
+
+.dive-form-tabs {
+    border-top-left-radius: 0px;
 }
 
 .form-row {
@@ -510,3 +509,84 @@
 }
 
 /*STYLING FÖR SIDORNA DETALJER OCH TA BORT - SLUT*/
+
+/*STYLING FÖR TIMER - START*/
+.timer-container {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+    width: 100%;
+    flex-wrap: wrap;
+}
+
+#surface-timer-wrapper,
+#ascent-timer-wrapper {
+    flex: 1;
+}
+
+.timer-wrapper {
+    background-color: white;
+    color: black;
+    max-width: 400px;
+    min-width: 320px;
+    border-radius: 6px;
+    margin-bottom: 1rem;
+}
+
+/*Regler för mobil (timer)*/
+@media (max-width: 768px) {
+    .timer-container {
+        justify-content: center;
+    }
+}
+
+#buddy-timer-wrapper {
+    margin: auto auto 1rem auto;
+}
+
+.timer-name {
+    background-color: #E17100;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+    font-weight: bold;
+    color: white;
+    border-radius: 6px 6px 0 0;
+}
+
+.timer-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    padding: 0.5rem 1rem;
+}
+
+.timer-label,
+.timer-row span {
+    display: flex;
+    align-items: center;
+    height: 40px;
+}
+
+.timer-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    background-color: #E17100;
+    border: none;
+    border-radius: 5px;
+}
+
+.timer-btn img {
+    width: 60%;
+    margin: 20%;
+}
+
+.stop-btn {
+    background-color: #dc0400;
+}
+
+/*STYLING FÖR TIMER - SLUT*/

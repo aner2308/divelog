@@ -4,30 +4,32 @@
     ViewData["Title"] = "Registrera dyk";
 }
 
-<h2>Registrera dyk</h2>
+<h1>Registrera dyk</h1>
 
 <!-- FLIKAR -->
 <div class="tabs-btn">
-    <button type="button" onclick="showSurfaceSupport(this)">Dykare + Dykskötare</button>
+    <button type="button" onclick="showSurfaceSupport(this)">Dykare + Dykarskötare</button>
     <button type="button" onclick="showBuddyDive(this)">Pardyk</button>
 </div>
 
-<form asp-action="Create" method="post" class="dive-form">
+<form asp-action="Create" method="post" class="dive-form dive-form-tabs">
 
     <div asp-validation-summary="All" class="error"></div>
 
     <!-- GEMENSAM INFO -->
     <!-- TIMERS -->
-    <div id="surface-timer-wrapper">
-        <p>Total Dyktid</p>
-        <div id="surface-timer-container"></div>
+    <div class="timer-container">
+        <div id="surface-timer-wrapper" class="timer-wrapper">
+            <p class="timer-name">Total Dyktid</p>
+            <div id="surface-timer-container"></div>
+        </div>
+        <div id="ascent-timer-wrapper" class="timer-wrapper">
+            <p class="timer-name">Uppstigningstid</p>
+            <div id="ascent-timer-container"></div>
+        </div>
     </div>
-    <div id="ascent-timer-wrapper">
-        <p>Uppstigningstid</p>
-        <div id="ascent-timer-container"></div>
-    </div>
-    <div id="buddy-timer-wrapper" style="display:none;">
-        <p>Total Dyktid</p>
+    <div id="buddy-timer-wrapper" class="timer-wrapper" style="display:none;">
+        <p class="timer-name">Total Dyktid</p>
         <div id="buddy-timer-container"></div>
     </div>
 
@@ -58,9 +60,9 @@
     </div>
 
     <div class="form-row">
-        <label asp-for="DiveLeaderId">Dykledare: </label>
+        <label asp-for="DiveLeaderId">Dykarledare: </label>
         <select asp-for="DiveLeaderId">
-            <option value="">Välj dykledare</option>
+            <option value="">Välj dykarledare</option>
             @foreach (var person in Model.DiveLeaders)
             {
                 <option value="@person.Id">@person.Signature - @person.Name</option>
@@ -72,9 +74,6 @@
 
     <!-- PARDYK -->
     <div id="buddyDiveSection" style="display:none;">
-
-        <h4>Pardyk</h4>
-
         <div id="pairGroupsContainer">
 
             @for (int pairIndex = 0; pairIndex < Model.PairGroups.Count; pairIndex++)
@@ -124,7 +123,7 @@
 
                     <button type="button" class="form-btn" onclick="addDiverToPair(@pairIndex)"
                             id="addThirdDiver-@pairIndex">
-                        + Lägg till tredje dykare
+                        Lägg till tredje dykare
                     </button>
 
                     <button type="button" class="form-btn remove-btn" onclick="removeThirdDiver(@pairIndex)"
@@ -145,7 +144,7 @@
         </div>
 
         <button type="button" class="form-btn" onclick="addPairGroup()">
-            + Lägg till nytt dykpar
+            Lägg till Dykpar
         </button>
 
     </div>
@@ -153,14 +152,12 @@
 
     <!-- LUFT FRÅN YTAN -->
     <div id="surfaceSupportSection">
-
-        <h4>Dykare + Dykskötare</h4>
-
         <div id="groupsContainer">
 
             @for (int i = 0; i < Model.SurfaceSupportGroups.Count; i++)
             {
                 <div class="surface-support-card" id="group-@i">
+                    <h5 class="surface-title">Dykare @(i + 1)</h5>
                     <div class="form-row">
                         <label>Dykare: </label>
                         <select asp-for="SurfaceSupportGroups[@i].DiverId">
@@ -173,9 +170,9 @@
                     </div>
 
                     <div class="form-row">
-                        <label>Dykskötare: </label>
+                        <label>Dykarskötare: </label>
                         <select asp-for="SurfaceSupportGroups[@i].SurfaceSupportId">
-                            <option value="">Välj dykskötare</option>
+                            <option value="">Välj dykarskötare</option>
                             @foreach (var person in Model.SurfaceSupports)
                             {
                                 <option value="@person.Id">@person.Signature - @person.Name</option>
@@ -226,7 +223,7 @@
         </div>
 
         <button type="button" class="form-btn" onclick="addGroup()">
-            + Lägg till dykare + dykskötare
+            Lägg till Dykare + Dykarskötare
         </button>
 
     </div>
@@ -328,6 +325,8 @@
         //Fyller nya elementet
         newGroup.innerHTML = `
         <div class="surface-support-card" id="group-${groupIndex}">
+
+         <h5 class="surface-title">Dykare ${groupIndex + 1}</h5>
             
             <div class="form-row">
                 <label>Dykare: </label>
@@ -335,18 +334,18 @@
                     <option value="">Välj dykare</option>
                     @foreach (var person in Model.Divers)
                     {
-                            <option value="@person.Id">@person.Signature - @person.Name</option>
+                                                                                        <option value="@person.Id">@person.Signature - @person.Name</option>
                     }
                 </select>
             </div>
             
             <div class="form-row">
-                <label>Dykskötare: </label>
+                <label>Dykarskötare: </label>
                 <select name="SurfaceSupportGroups[${groupIndex}].SurfaceSupportId">
-                    <option value="">Välj dykskötare</option>
+                    <option value="">Välj dykarskötare</option>
                     @foreach (var person in Model.SurfaceSupports)
                     {
-                            <option value="@person.Id">@person.Signature - @person.Name</option>
+                                                                                        <option value="@person.Id">@person.Signature - @person.Name</option>
                     }
                 </select>
             </div>
@@ -393,7 +392,7 @@
         createTimer("surface-timer-container", `Dyk ${currentIndex + 1}`, `group-${currentIndex}`, "dive");
         createTimer("ascent-timer-container", `Uppstigning ${currentIndex + 1}`, `group-${currentIndex}`, "ascent");
 
-        //Uppdatera labels för timers
+        renumberSurfaceGroups();
         updateSurfaceTimerLabels();
 
         //Ökar index
@@ -405,6 +404,7 @@
         const groupId = `group-${index}`;
         document.getElementById(`group-${index}`).remove();
         removeTimerByGroup(groupId);
+        renumberSurfaceGroups();
         updateSurfaceTimerLabels();
     }
 
@@ -428,7 +428,7 @@
             </div>
 
             <button type="button" class="form-btn" onclick="addDiverToPair(${pairIndex})" id="addThirdDiver-${pairIndex}">
-                + Lägg till tredje dykare
+                Lägg till tredje dykare
             </button>
 
             <button type="button" class="form-btn remove-btn" onclick="removeThirdDiver(${pairIndex})" id="removeThirdDiver-${pairIndex}" style="display:none;">
@@ -463,7 +463,7 @@
                 <option value="">Välj dykare</option>
                 @foreach (var person in Model.Divers)
                 {
-                        <option value="@person.Id">@person.Signature - @person.Name</option>
+                                                                                    <option value="@person.Id">@person.Signature - @person.Name</option>
                 }
             </select>
             
