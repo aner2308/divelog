@@ -23,9 +23,9 @@ function createTimer(containerId, label, groupId, type) {
         <span class="timer-label">${label}</span>
         <span id="time-${id}">00:00</span>
 
-        <button type="button" onclick="startTimer('${id}')">Start</button>
-        <button type="button" onclick="stopTimer('${id}')">Stopp</button>
-        <button type="button" onclick="resetTimer('${id}')">Nollställ</button>
+        <button type="button" class="timer-btn start-btn" onclick="startTimer('${id}')"><img src="/images/start.png" alt="Starta timer"/></button>
+        <button type="button" class="timer-btn stop-btn" onclick="stopTimer('${id}')" style="display:none;"><img src="/images/stop.png" alt="Stoppa timer"/></button>
+        <button type="button" class="timer-btn reset-btn" onclick="resetTimer('${id}')"><img src="/images/reset.png" alt="Nollställ timer"/></button>
     `;
 
     document.getElementById(containerId).appendChild(row);
@@ -57,6 +57,8 @@ function startTimer(id) {
             `${String(min).padStart(2, '0')}:${String(sec % 60).padStart(2, '0')}`;
 
     }, 1000);
+
+    updateTimerButtons(id, true);
 }
 
 //Funktion som stoppar timer
@@ -69,6 +71,8 @@ function stopTimer(id) {
     //Stoppar den pågående timern
     clearInterval(t.interval);
     t.interval = null;
+
+    updateTimerButtons(id, false);
 
     //Variabel som sparar tiden i minuter, påbörjad minut avrundas uppåt
     const minutes = Math.ceil(t.elapsed / 60000);
@@ -107,6 +111,8 @@ function resetTimer(id) {
     //Nollställ timer
     t.start = null;
     t.elapsed = 0;
+
+    updateTimerButtons(id, false);
 
     //Uppdatera texten på sidan
     const el = document.getElementById(`time-${id}`);
@@ -169,6 +175,19 @@ function removeTimerByGroup(groupId) {
     }
 }
 
+//Funktion som byter namn på dykkorten efter borttagning (Dykare + Dykskötare)
+function renumberSurfaceGroups() {
+
+    document.querySelectorAll(".surface-support-card").forEach((group, index) => {
+
+        const title = group.querySelector("h5");
+
+        if (title) {
+            title.innerText = `Dykare ${index + 1}`;
+        }
+    });
+}
+
 //Funktion som uppdaterar timer labels för dyk med Dykare + Dykarskötare
 function updateSurfaceTimerLabels() {
 
@@ -222,7 +241,7 @@ function updateSurfaceTimerLabels() {
     });
 }
 
-//Funktion som byter namn på timers efter borttagning (Pardyk)
+//Funktion som byter namn på dykkorten efter borttagning (Pardyk)
 function renumberPairGroups() {
 
     document.querySelectorAll(".pair-group").forEach((group, index) => {
@@ -291,4 +310,20 @@ function updateBuddyTimerLabels() {
             }
         }
     });
+}
+
+//Funktion som ändrar stylingen för knapparna i timern
+function updateTimerButtons(id, running) {
+
+    const row = document.querySelector(`[data-timer-id='${id}']`);
+
+    if (!row) return;
+
+    const startBtn = row.querySelector(".start-btn");
+    const stopBtn = row.querySelector(".stop-btn");
+
+    if (!startBtn || !stopBtn) return;
+
+    startBtn.style.display = running ? "none" : "inline-block";
+    stopBtn.style.display = running ? "inline-block" : "none";
 }

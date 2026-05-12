@@ -4,7 +4,7 @@
     ViewData["Title"] = "Redigera dyk (luft från ytan)";
 }
 
-<h2 class="h2-tab">Redigera dyk (luft från ytan)</h2>
+<h1>Redigera dyk</h1>
 
 <form asp-action="EditSurfaceSupportDive" method="post" class="dive-form">
 
@@ -43,7 +43,7 @@
     </div>
 
     <div class="form-row">
-        <label asp-for="DiveLeaderId">Dykledare:</label>
+        <label asp-for="DiveLeaderId">Dykarledare:</label>
         <select asp-for="DiveLeaderId">
             @foreach (var p in Model.DiveLeaders)
             {
@@ -54,11 +54,8 @@
         </select>
     </div>
 
-    <!-- DYKARE + DYKSKÖTARE -->
-    <h4>Dykare + Dykskötare</h4>
-
+    <!-- DYKARE + DYKARSKÖTARE -->
     <div class="surface-support-card">
-
         <div class="form-row">
             <label asp-for="DiverId">Dykare:</label>
             <select asp-for="DiverId">
@@ -72,7 +69,7 @@
         </div>
 
         <div class="form-row">
-            <label asp-for="SurfaceSupportId">Dykskötare:</label>
+            <label asp-for="SurfaceSupportId">Dykarskötare:</label>
             <select asp-for="SurfaceSupportId">
                 @foreach (var p in Model.SurfaceSupports)
                 {

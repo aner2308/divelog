@@ -4,7 +4,7 @@
     ViewData["Title"] = "Redigera pardyk";
 }
 
-<h2 class="h2-tab">Redigera pardyk</h2>
+<h1>Redigera dyk</h1>
 
 <form asp-action="EditBuddyDive" method="post" class="dive-form">
 
@@ -43,7 +43,7 @@
     </div>
 
     <div class="form-row">
-        <label asp-for="DiveLeaderId">Dykledare:</label>
+        <label asp-for="DiveLeaderId">Dykarledare:</label>
         <select asp-for="DiveLeaderId">
             @foreach (var p in Model.DiveLeaders)
             {
@@ -55,9 +55,8 @@
     </div>
 
     <!-- INFORMATION OM DYKARNA -->
-    <h4>Pardyk</h4>
-
     <div class="pair-group">
+        <h5 class="pair-title">Dykpar</h5>
 
         <div class="diversContainer">
 
@@ -117,60 +116,15 @@
     <a asp-action="Index">Tillbaka till Dyklogg</a>
 </div>
 
-<script>
-    //Räknar ut expositionstid
-    function calculateExposure(depth, time) {
-        if (!depth || !time) return 0;
-
-        const depthFactor = Math.ceil(depth / 9);
-        return Math.max(0, time - depthFactor);
-    }
-
-    //Uppdaterar expositionstid i rätt kort
-    function updateExposureFromCard(card) {
-        const depthInput = card.querySelector(".depth-input");
-        const timeInput = card.querySelector(".time-input");
-        const output = card.querySelector(".exposition-time");
-
-        if (!depthInput || !timeInput || !output) return;
-
-        const depth = parseFloat(depthInput.value);
-        const time = parseFloat(timeInput.value);
-
-        const exposure = calculateExposure(depth, time);
-
-        output.textContent = exposure + " min";
-    }
-
-    document.addEventListener("input", function (e) {
-        if (
-            e.target.classList.contains("depth-input") ||
-            e.target.classList.contains("time-input")
-        ) {
-            const card = e.target.closest(".diver-card");
-
-            if (card) {
-                updateExposureFromCard(card);
-            }
-        }
-    });
-
-
-    window.onload = function () {
-        document.querySelectorAll(".diver-card").forEach(card => {
-            updateExposureFromCard(card);
-        });
-    };
-</script>
-
 @section Scripts {
-    <script>
+    <script src="~/js/dive-timer.js"></script>
 
+    <script>
         //Hämta sparade koordinater
         var lat = @Model.Latitude.ToString(System.Globalization.CultureInfo.InvariantCulture);
         var lng = @Model.Longitude.ToString(System.Globalization.CultureInfo.InvariantCulture);
 
-        // Skapa karta
+        //Skapa karta
         var map = L.map('map').setView([lat, lng], 14);
 
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -179,7 +133,7 @@
 
         var marker = L.marker([lat, lng]).addTo(map);
 
-        // Flytta markering vid klick
+        //Flytta markering vid klick
         map.on('click', function (e) {
 
             var newLat = e.latlng.lat.toFixed(6);
@@ -187,7 +141,7 @@
 
             marker.setLatLng([newLat, newLng]);
 
-            // Byter ut punkt mot decimal för korrekt format
+            //Byter ut punkt mot decimal för korrekt format
             document.getElementById("Latitude").value =
                 newLat.replace('.', ',');
 
@@ -195,6 +149,53 @@
                 newLng.replace('.', ',');
         });
 
+    </script>
+    
+    <script>
+        //Räknar ut expositionstid
+        function calculateExposure(depth, time) {
+            if (!depth || !time) return 0;
+
+            const depthFactor = Math.ceil(depth / 9);
+            return Math.max(0, time - depthFactor);
+        }
+
+        //Uppdaterar expositionstid i rätt kort
+        function updateExposureFromCard(card) {
+            const depthInput = card.querySelector(".depth-input");
+            const timeInput = card.querySelector(".time-input");
+            const output = card.querySelector(".exposition-time");
+
+            if (!depthInput || !timeInput || !output) return;
+
+            const depth = parseFloat(depthInput.value);
+            const time = parseFloat(timeInput.value);
+
+            const exposure = calculateExposure(depth, time);
+
+            output.textContent = exposure + " min";
+        }
+
+        document.addEventListener("input", function (e) {
+            if (
+                e.target.classList.contains("depth-input") ||
+                e.target.classList.contains("time-input")
+            ) {
+                const card = e.target.closest(".diver-card");
+
+                if (card) {
+                    updateExposureFromCard(card);
+                }
+            }
+        });
+
+        window.onload = function () {
+            document.querySelectorAll(".diver-card").forEach(card => {
+                updateExposureFromCard(card);
+            });
+
+            renumberPairGroups();
+        };
     </script>
 
     @{

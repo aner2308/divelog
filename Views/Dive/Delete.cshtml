@@ -4,7 +4,7 @@
     ViewData["Title"] = "Delete";
 }
 
-<h2>Radera</h2>
+<h1>Radera</h1>
 
 <h3>Är du säker på att du vill radera dyket?</h3>
 
@@ -51,7 +51,7 @@
             <dt>Typ av dyk:</dt>
             <dd>@Model.DivePurpose?.Name</dd>
 
-            <dt>Dykledare:</dt>
+            <dt>Dykarledare:</dt>
             <dd>
                 @if (leader != null)
                 {
@@ -59,11 +59,11 @@
                 }
                 else
                 {
-                    <span>Ingen dykledare registrerad</span>
+                    <span>Ingen dykarledare registrerad</span>
                 }
             </dd>
 
-            <dt>Dykskötare:</dt>
+            <dt>Dykarskötare:</dt>
             <dd>
                 @if (support != null)
                 {
@@ -71,7 +71,7 @@
                 }
                 else
                 {
-                    <span>Ingen dykskötare registrerad</span>
+                    <span>Ingen dykarskötare registrerad</span>
                 }
             </dd>
 
