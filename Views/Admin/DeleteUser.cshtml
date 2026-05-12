@@ -4,12 +4,10 @@
     ViewData["Title"] = "Ta bort användare";
 }
 
+<div class="page-header">
+    <h1>Ta bort användare</h1>
+</div>
 <div class="user-form">
-
-    <div class="page-header">
-        <h2>Ta bort användare</h2>
-    </div>
-
     <div class="admin-user-card delete-card">
 
         <div class="admin-user-info">
@@ -27,7 +25,7 @@
             <input type="hidden" asp-for="Id" />
 
             <button type="submit" class="user-form-btn remove-user-btn">
-                Ta bort användare
+                Ta bort
             </button>
 
             <a asp-action="Index" class="user-form-btn">
@@ -41,5 +39,5 @@
 </div>
 
 <div class="navigate-back">
-    <a asp-action="Index">Tillbaka till adminsidan</a>
+    <a asp-action="Index">Tillbaka till Admin</a>
 </div>

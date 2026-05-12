@@ -6,7 +6,7 @@
 
 <h1>Radera</h1>
 
-<h3>Är du säker på att du vill radera dyket?</h3>
+<h3 class="remove">Är du säker på att du vill radera dyket?</h3>
 
 @{
     var leader = Model.DiveParticipants?
@@ -129,7 +129,7 @@
         <input type="hidden" asp-for="Id" />
         <div class="details-button-wrapper">
             <button type="submit" class="form-btn remove-btn">
-                Radera dyk
+                Radera
             </button>
         </div>
     </form>
@@ -163,7 +163,7 @@
         });
 
         //Lägger till markör
-        L.marker([lat, lng], {icon: customIcon}).addTo(map);
+        L.marker([lat, lng], { icon: customIcon }).addTo(map);
 
     </script>
 }

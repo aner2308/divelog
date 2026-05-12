@@ -9,7 +9,7 @@
 .user-form {
     max-width: 900px;
     width: 90vw;
-    margin: 50px auto 2rem auto;
+    margin: 0 auto 2rem auto;
     padding: 2rem;
     background: #9DB2BF;
     border-radius: 14px;
@@ -54,7 +54,9 @@
 
 .full-width-btn {
     width: 100%;
-    margin-top: 1rem;
+    margin: 1rem auto;
+    display: block;
+    align-items: center;
 }
 
 .update-user-btn {
@@ -66,8 +68,8 @@
     color: white;
     border: none;
     box-shadow: 5px 5px 0px rgba(100, 100, 100, 0.7);
-    min-height: 42px;
-    width: 250px;
+    min-height: 40px;
+    width: 220px;
     padding: 10px 20px;
     margin: 20px auto 0 auto;
     cursor: pointer;
@@ -85,7 +87,7 @@
 }
 
 .admin-user-card {
-    background: rgba(255, 255, 255, 0.05);
+    background: #526d824b;
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 12px;
     padding: 1.5rem;
@@ -152,10 +154,10 @@
     color: white;
     border: none;
     box-shadow: 5px 5px 0px rgba(100, 100, 100, 0.7);
-    min-height: 42px;
-    width: 100%;
+    height: 40px;
+    width: 220px;
     padding: 10px 20px;
-    margin: 0.5rem;
+    margin: 0.5rem auto;
     cursor: pointer;
     transition: transform 0.2s ease;
     font-size: 1.4rem;

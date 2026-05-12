@@ -1,6 +1,6 @@
 .page-container {
-    padding-left: 1rem;
-    padding-right: 1rem;
+    padding-left: 2rem;
+    padding-right: 2rem;
 }
 
 /*Knappar ovanför tabell*/
@@ -70,6 +70,10 @@
     transition: transform 0.2s ease;
 }
 
+.remove-btn {
+    background-color: #dc0400 !important;
+}
+
 .table-btn:hover {
     transform: scale(1.05);
 }
@@ -109,6 +113,13 @@
     border-radius: 5px;
     text-align: left;
     margin-bottom: 1rem;
+}
+
+.remove {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    text-align: center;
+    color: rgb(255, 39, 39);
 }
 
 /*Regler för filtrering*/
@@ -203,7 +214,7 @@
     width: 90vw;
     max-width: 900px;
     margin: 0 auto 2rem auto;
-    padding: 5rem 2rem 3rem 2rem;
+    padding: 2rem 2rem 2rem 2rem;
     background: #9DB2BF;
     border-radius: 14px;
     box-shadow: 0 15px 35px rgba(0, 0, 0, 0.25);
@@ -234,7 +245,8 @@
     padding: 8px 10px;
     border-radius: 6px;
     border: none;
-    width: 400px;
+    width: 100%;
+    max-width: 400px;
 }
 
 .dive-form select,
@@ -254,6 +266,7 @@
 }
 
 .notes textarea {
+    width: 100%;
     min-height: 100px;
     max-height: 300px;
     /*Användaren kan ändra höjden uppåt och nedåt*/
@@ -304,10 +317,6 @@
 
 .form-btn:active {
     transform: scale(0.98);
-}
-
-.form-btn.remove-btn {
-    background-color: #dc0400;
 }
 
 /*DYKFORMULÄR SKAPA DYK - SLUT*/
