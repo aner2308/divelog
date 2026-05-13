@@ -250,10 +250,6 @@
     transition: transform 0.2s ease;
 }
 
-.person-btn:hover {
-    transform: scale(1.05);
-}
-
 .table-btn:hover {
     transform: scale(1.05);
 }

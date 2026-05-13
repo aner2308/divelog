@@ -1,0 +1,122 @@
+.about-card {
+    display: grid;
+    grid-template-columns: 60% 40%;
+    width: 90vw;
+    margin: 0 auto 10rem auto;
+    max-width: 1000px;
+    background-color: #9DB2BF;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.25);
+    overflow: hidden;
+}
+
+.about-text {
+    padding: 3rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.about-text p {
+    color: white;
+    max-width: 400px;
+    margin: auto;
+    text-align: center;
+}
+
+.about-text img {
+    height: auto;
+    width: 120px;
+    margin: 0 auto 2rem auto;
+
+}
+
+.about-image {
+    position: relative;
+    height: 100%;
+    overflow: hidden;
+}
+
+.about-image img {
+    width: 80%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.image-overlay1 {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 20%;
+    height: 100%;
+    background-color: #9DB2Bf80;
+}
+
+.image-overlay2 {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 40%;
+    height: 100%;
+    background-color: #9DB2Bf80;
+}
+
+.image-overlay3 {
+    position: absolute;
+    top: 0;
+    left: 60%;
+    width: 20%;
+    height: 100%;
+    background-color: #9DB2Bf80;
+}
+
+@media (max-width: 660px) {
+
+    .about-card {
+        grid-template-columns: 100%;
+        grid-template-rows: auto;
+        margin-bottom: 3rem;
+        margin-top: 3rem;
+    }
+
+    .about-image {
+        position: relative;
+        height: 100%;
+        overflow: hidden;
+    }
+
+    .about-image img {
+        width: 80%;
+        height: 90%;
+        object-fit: cover;
+        display: block;
+        margin: auto;
+    }
+
+    .image-overlay1 {
+        position: absolute;
+        top: 0;
+        left: 10%;
+        width: 20%;
+        height: 100%;
+        background-color: #9DB2Bf80;
+    }
+
+    .image-overlay2 {
+        position: absolute;
+        top: 0;
+        left: 10%;
+        width: 40%;
+        height: 100%;
+        background-color: #9DB2Bf80;
+    }
+
+    .image-overlay3 {
+        position: absolute;
+        top: 0;
+        left: 70%;
+        width: 20%;
+        height: 100%;
+        background-color: #9DB2Bf80;
+    }
+}

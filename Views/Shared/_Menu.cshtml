@@ -23,6 +23,10 @@
         {
             <li><a asp-controller="Dive" asp-action="Index">Dyklogg</a></li>
         }
+         @if (User.IsInRole("Reader") || User.IsInRole("Editor") || User.IsInRole("Admin"))
+        {
+            <li><a asp-controller="Statistics" asp-action="Index">Statistik</a></li>
+        }
         @if (User.IsInRole("Reader") || User.IsInRole("Editor") || User.IsInRole("Admin"))
         {
             <li><a asp-controller="Person" asp-action="Index">Personal</a></li>
@@ -32,7 +36,7 @@
         {
             <li>
                 <a asp-controller="Admin" asp-action="Index">
-                    Adminsidan
+                    Admin
                 </a>
             </li>
         }
