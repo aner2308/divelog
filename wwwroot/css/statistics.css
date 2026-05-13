@@ -1,0 +1,133 @@
+/* Bakgrund för hela formuläret */
+.statistics-form {
+    width: 90vw;
+    max-width: 1100px;
+    margin: 0 auto 2rem auto;
+    padding: 5rem 2rem 3rem 2rem;
+    background: #9DB2BF;
+    border-radius: 14px;
+    border-top-left-radius: 0px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.25);
+    color: #fff;
+    text-align: center;
+}
+
+/* Filtermenyernas utseende */
+.statistics-form select {
+    padding: 8px 10px;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+}
+
+/* När något behöver döljas */
+.hidden {
+    display: none;
+}
+
+/* Placering av filtren */
+.filter-row {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+}
+
+/* Scrollbar tabell */
+.statistics-table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    text-align: center;
+}
+
+/* Tabellutseende */
+.statistics-table {
+    border-collapse: collapse;
+    margin-top: 1rem;
+    min-width: 750px;
+    width: max-content;
+    table-layout: fixed;
+}
+
+/* Header i tabell */
+.statistics-table thead {
+    background-color: #E17100;
+    color: white;
+}
+
+.statistics-table th {
+    padding: 0.8rem;
+    border: 1px solid #526D82;
+    text-align: center;
+}
+
+/* Fast bredd på person */
+.statistics-table th:first-child,
+.statistics-table td:first-child {
+    width: 180px;
+}
+
+/* Alla celler */
+.statistics-table td {
+    padding: 0.7rem;
+    border: 1px solid #526D82;
+    background-color: #9DB2BF;
+    text-align: center;
+}
+
+/* Understreck på varje rad */
+.statistics-table tr {
+    border-bottom: 3px solid #526D82;
+}
+
+/* Första kolumnen */
+.statistics-table .person-cell {
+    font-weight: 600;
+}
+
+/* Grön bakgrund om dyk är genomfört */
+.has-dives {
+    background-color: #6FA77B !important;
+    color: white;
+    font-weight: 600;
+}
+
+/* Total dyktid - Annan bakgrund */
+.statistics-table tbody tr .total-dive-time {
+    background-color: #4a6173;
+}
+
+/* Totalt antal dyk - Annan bakgrund */
+.statistics-table tbody tr .total-dives {
+    background-color: #6b869a;
+}
+
+/* Fast bredd på dyksyften i tabell */
+.purpose-header {
+    width: 100px;
+}
+
+/* Fast bredd på tot dyktid och tot antal dyk */
+.total-column,
+.total-dives,
+.dive-time-column,
+.total-dive-time {
+    width: 70px;
+}
+
+/* Filter hamnar ver varandra på små skärmbredder */
+@media (max-width: 468px) {
+
+    /* Lägger filter över varandra */
+    .filter-row {
+        flex-direction: column;
+    }
+
+    /* Bredd på filter */
+    .statistics-form select {
+        width: 200px
+    }
+
+}
