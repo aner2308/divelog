@@ -7,8 +7,8 @@ public class CreateDiveViewModel
     public DateTime Date { get; set; }
     public TimeSpan StartTime { get; set; }
     public string? LocationName { get; set; }
-    public double Latitude { get; set; }
-    public double Longitude { get; set; }
+    public double? Latitude { get; set; }
+    public double? Longitude { get; set; }
     public string? Notes { get; set; }
     public int? DivePurposeId { get; set; }
     // Dykledare (en)

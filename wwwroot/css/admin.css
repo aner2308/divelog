@@ -1,3 +1,4 @@
+/*Grönt meddelande vid lyckade åtgårder*/
 .success-message {
     background-color: #d4edda;
     color: #155724;
@@ -6,6 +7,7 @@
     margin-bottom: 1rem;
 }
 
+/*Formulärstyling*/
 .user-form {
     max-width: 900px;
     width: 90vw;
@@ -19,6 +21,7 @@
     flex-direction: column;
 }
 
+/*Styling för labels*/
 .user-form label {
     width: 50%;
     text-align: right;
@@ -26,6 +29,7 @@
     padding-left: 0.5rem;
 }
 
+/*Styling för input och selectfält*/
 .user-form input,
 .user-form select {
     padding: 8px 10px;
@@ -33,25 +37,30 @@
     border: none;
 }
 
+/*bredd på input-fält*/
 .user-form input {
     max-width: 45%;
     width: 100%;
 }
 
+/*Pekare på dropdown-menyer*/
 .user-form select {
     cursor: pointer;
 }
 
+/*Layout för autentiseringssidor (login etc)*/
 .auth-card {
     max-width: 500px;
     margin: 3rem auto;
 }
 
+/*checkbox-rad*/
 .checkbox-row input {
     width: auto;
     margin: 0;
 }
 
+/*Bred knapp*/
 .full-width-btn {
     width: 100%;
     margin: 1rem auto;
@@ -59,6 +68,7 @@
     align-items: center;
 }
 
+/*Knapp för uppdatera anvädare*/
 .update-user-btn {
     display: block;
     align-items: center;
@@ -79,6 +89,7 @@
     border-radius: 2px;
 }
 
+/*Lista för användarkort på index-sidan*/
 .admin-users-list {
     display: flex;
     flex-direction: column;
@@ -86,6 +97,7 @@
     margin-top: 2rem;
 }
 
+/*Kort för varje användare*/
 .admin-user-card {
     background: #526d824b;
     border: 1px solid rgba(255, 255, 255, 0.1);
@@ -98,25 +110,23 @@
     text-align: center;
 }
 
+/*Information om användaren*/
 .admin-user-info {
     margin: 0 auto;
     font-size: 1em;
 }
 
+/*Rubrik för kort*/
 .admin-user-info h4 {
     margin-bottom: 0.5rem;
 }
 
+/*Brödtext för kort*/
 .admin-user-info p {
     margin: 0;
 }
 
-.admin-user-actions {
-    display: flex;
-    gap: 1rem;
-    flex-wrap: wrap;
-}
-
+/*Headersektion för adminsidor*/
 .page-header {
     align-items: center;
     gap: 1rem;
@@ -124,19 +134,23 @@
     margin: 0 auto;
 }
 
+/*Kortlayout för raderingssidor*/
 .delete-card {
     max-width: 800px;
     margin: 2rem auto;
 }
 
+/*Avstånd under text i delete-card*/
 .delete-card p {
     margin-bottom: 0.5rem;
 }
 
+/*Rubrik i delete-card*/
 .delete-card h4 {
     margin-bottom: 1.5rem;
 }
 
+/*Container för knappar på kort*/
 .admin-user-actions {
     display: flex;
     flex-direction: row;
@@ -145,6 +159,7 @@
     width: 200px;
 }
 
+/*Gemensam styling för formulärknappar*/
 .user-form-btn {
     display: inline-flex;
     align-items: center;
@@ -165,6 +180,7 @@
     border-radius: 2px;
 }
 
+/*Hover på knappar*/
 .user-form-btn:hover {
     transform: scale(1.05);
 }
@@ -173,16 +189,21 @@
     transform: scale(0.98);
 }
 
+/*Färg på remove-knapp*/
 .user-form-btn.remove-user-btn {
     background-color: #dc0400;
 }
 
+/*STYLING - SMÅ SKÄRMAR*/
 @media (max-width: 550px) {
+
+    /*Knappar hamnar under Användarinnehåll*/
     .admin-user-card {
         flex-direction: column;
         align-items: center;
     }
 
+    /*Fast bredd på knappar*/
     .update-user-btn {
         width: 200px;
     }

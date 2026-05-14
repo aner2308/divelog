@@ -1,3 +1,4 @@
+/*STYLING FÖR ABOUT-SIDAN*/
 .about-card {
     display: grid;
     grid-template-columns: 60% 40%;
@@ -70,6 +71,7 @@
     background-color: #9DB2Bf80;
 }
 
+/*SMÅ SKÄRMAR - Text hamnar ovanför bilden*/
 @media (max-width: 660px) {
 
     .about-card {
