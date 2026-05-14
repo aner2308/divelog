@@ -21,11 +21,13 @@ function createTimer(containerId, label, groupId, type) {
     row.dataset.timerId = id;
     row.innerHTML = `
         <span class="timer-label">${label}</span>
-        <span id="time-${id}">00:00</span>
-
+        <span class="timer-time" id="time-${id}">00:00</span>
+        
+        <div class="timer-buttons">
         <button type="button" class="timer-btn start-btn" onclick="startTimer('${id}')"><img src="/images/start.png" alt="Starta timer"/></button>
         <button type="button" class="timer-btn stop-btn" onclick="stopTimer('${id}')" style="display:none;"><img src="/images/stop.png" alt="Stoppa timer"/></button>
         <button type="button" class="timer-btn reset-btn" onclick="resetTimer('${id}')"><img src="/images/reset.png" alt="Nollställ timer"/></button>
+        </div>
     `;
 
     document.getElementById(containerId).appendChild(row);

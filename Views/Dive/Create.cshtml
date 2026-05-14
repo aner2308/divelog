@@ -32,7 +32,7 @@
         <p class="timer-name">Total Dyktid</p>
         <div id="buddy-timer-container"></div>
     </div>
-
+    <div class="margin"></div>
     <div class="form-row">
         <label asp-for="Date">Datum: </label>
         <input asp-for="Date" type="date" class="date-input" />
@@ -259,7 +259,8 @@
         let inputs = document.querySelectorAll(`#${sectionId} input, #${sectionId} select, #${sectionId} textarea`);
 
         inputs.forEach(input => {
-            input.disabled = !enabled;
+            input.style.pointerEvents = enabled ? "auto" : "none";
+            input.style.opacity = enabled ? "1" : "0.5";
         });
     }
 
@@ -607,8 +608,22 @@
 
         var marker;
 
+        // Återställ marker om koordinater redan finns
+        const savedLat = document.getElementById("Latitude").value;
+        const savedLng = document.getElementById("Longitude").value;
+
+        if (savedLat && savedLng) {
+
+            const lat = parseFloat(savedLat.replace(',', '.'));
+            const lng = parseFloat(savedLng.replace(',', '.'));
+
+            marker = L.marker([lat, lng], { icon: customIcon }).addTo(map);
+
+            map.setView([lat, lng], 15);
+        
+
         //Om användaren har platstjänster aktiverade
-        if (navigator.geolocation) {
+        } else if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(function (position) {
 
                 var userLat = position.coords.latitude;
