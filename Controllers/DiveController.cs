@@ -284,8 +284,11 @@ namespace divelog.Controllers
             if (vm.LocationName?.Length >= 30)
                 ModelState.AddModelError("", "Platsnamn får vara max 30 tecken.");
 
+            if (!vm.Latitude.HasValue || !vm.Longitude.HasValue)
+                ModelState.AddModelError("", "Välj en plats på kartan.");
+
             //Kontroll av dykledare
-            if (vm.DiveLeaderId <= 0)
+            if (!vm.DiveLeaderId.HasValue || vm.DiveLeaderId.Value <= 0)
                 ModelState.AddModelError("", "Dykledare måste väljas.");
 
             //Kontroll av dyktyp
@@ -518,7 +521,7 @@ namespace divelog.Controllers
             if (dive == null) return NotFound();
 
             //VALIDERING
-            if (vm.DiveLeaderId <= 0)
+            if (!vm.DiveLeaderId.HasValue || vm.DiveLeaderId.Value <= 0)
                 ModelState.AddModelError("", "Dykledare måste väljas.");
 
             if (string.IsNullOrWhiteSpace(vm.LocationName))
@@ -624,7 +627,7 @@ namespace divelog.Controllers
             if (dive == null) return NotFound();
 
             // VALIDERING
-            if (vm.DiveLeaderId <= 0)
+            if (!vm.DiveLeaderId.HasValue || vm.DiveLeaderId.Value <= 0)
                 ModelState.AddModelError("", "Dykledare måste väljas.");
 
             if (!vm.DiverId.HasValue)
@@ -757,8 +760,8 @@ namespace divelog.Controllers
                 Date = vm.Date.Date,
                 StartTime = vm.StartTime,
                 LocationName = vm.LocationName,
-                Latitude = vm.Latitude,
-                Longitude = vm.Longitude,
+                Latitude = vm.Latitude!.Value,
+                Longitude = vm.Longitude!.Value,
                 Notes = vm.Notes,
                 DiveType = vm.DiveType,
                 DivePurposeId = vm.DivePurposeId,

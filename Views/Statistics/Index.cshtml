@@ -1,0 +1,302 @@
+@model divelog.ViewModels.StatisticsViewModel
+
+@{
+    ViewData["Title"] = "Statistik";
+
+    <!-- Sträng med månader till tabellen -->
+    string[] months =
+    {
+        "Jan", "Feb", "Mar", "Apr",
+        "Maj", "Jun", "Jul", "Aug",
+        "Sep", "Okt", "Nov", "Dec"
+    };
+}
+
+<!-- SIDRUBRIK -->
+<h1>Statistik</h1>
+
+<!-- FLIKAR -->
+<div class="tabs-btn">
+    <button type="button" class="@(Model.ActiveTab == "dives" ? "active" : "")" onclick="showNumberOfDives(this)">Antal dykövningar</button>
+    <button type="button" class="@(Model.ActiveTab == "purposes" ? "active" : "")" onclick="showDivePurposes(this)">Syften</button>
+</div>
+
+<div class="statistics-form">
+
+        <!-- Formulär för filtrering -->
+        <form method="get" class="statistics-filter-form">
+            <!--Kontrollerar vilken flik som är vald-->
+            <input type="hidden" name="tab" id="activeTab" value="@Model.ActiveTab" />
+
+            <div class="filter-row">
+                <!-- ÅR -->
+                <select name="year" id="year">
+                    @for (int year = DateTime.Now.Year; year >= 2020; year--)
+                    {
+                        if (year == Model.SelectedYear)
+                        {
+                            <option value="@year" selected>
+                                @year
+                            </option>
+                        }
+                        else
+                        {
+                            <option value="@year">
+                                @year
+                            </option>
+                        }
+                    }
+                </select>
+
+                <!-- GRUPP -->
+                <select name="groupId" id="groupId">
+
+                    <option value="">
+                        Alla grupper
+                    </option>
+
+                    @foreach (var group in Model.Groups)
+                    {
+                        if (group.Id == Model.SelectedGroupId)
+                        {
+                            <option value="@group.Id" selected>
+                                @group.Name
+                            </option>
+                        }
+                        else
+                        {
+                            <option value="@group.Id">
+                                @group.Name
+                            </option>
+                        }
+                    }
+                </select>
+
+                <!-- ROLL -->
+                <!-- Select-menyn försvinner om man är på syfte-tabellen -->
+                <div id="role-filter" class="@(Model.ActiveTab == "purposes" ? "hidden" : "")">
+                    <select name="roleId" id="roleId">
+
+                        @foreach (var role in Model.Roles)
+                        {
+                            if (role.Value == Model.SelectedRoleId.ToString())
+                            {
+                                <option value="@role.Value" selected>
+                                    @role.Text
+                                </option>
+                            }
+                            else
+                            {
+                                <option value="@role.Value">
+                                    @role.Text
+                                </option>
+                            }
+                        }
+                    </select>
+                </div>
+            </div>
+        </form>
+
+    <!-- TABELL FÖR ANTAL DYK ÖVER ÅRET -->
+    <div id="divesTable" class="statistics-section @(Model.ActiveTab == "purposes" ? "hidden" : "")">
+        <div class="statistics-table-wrapper">
+            <!-- Tabellrubriker -->
+            <table class="statistics-table">
+                <thead>
+                    <tr>
+                        <th>Person</th>
+
+                        <!-- Skriver ut alla månadsnamn -->
+                        @foreach (var month in months)
+                        {
+                            <th>@month</th>
+                        }
+                        <th class="total-column">Totalt antal</th>
+
+                        <!-- Om man valt rollen dykare skrivs total dyktid ut som kolumn -->
+                        @if (Model.SelectedRoleId == 1)
+                        {
+                            <th class="total-dive-time">Total dyktid</th>
+                        }
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <!-- Kontroll om statistik finns -->
+                    @if (!Model.Rows.Any())
+                    {
+                        <tr>
+                            <td colspan="15">
+                                Ingen statistik hittades.
+                            </td>
+                        </tr>
+                    }
+                    else
+                    {
+                        <!-- Om statistik finns -->
+                        @foreach (var personGroup in Model.Rows.GroupBy(r => r.PersonName))
+                        {
+                            int rowSpan = personGroup.Count();
+                            bool firstRow = true;
+
+                            foreach (var row in personGroup)
+                            {
+                                <!-- Klassnamn på första kolumn för styling -->
+                                <tr class="@(firstRow ? "person-start" : "")">
+                                    @if (firstRow)
+                                    {
+                                        <td rowspan="@rowSpan" class="person-cell">
+
+                                            <strong>@row.Signature</strong>
+                                            <br />
+
+                                            @row.PersonName
+
+                                        </td>
+
+                                        firstRow = false;
+                                    }
+                                    <!-- Skriver ut antal dyk för respektive månad -->
+                                    @for (int month = 1; month <= 12; month++)
+                                    {
+                                    
+                                        int count = row.MonthlyCounts.ContainsKey(month) ? row.MonthlyCounts[month] : 0;
+
+                                        <!-- Om dyk gjorts under månad får den klassnamn för styling -->
+                                        <td class="@(count > 0 ? "has-dives" : "")">
+                                            @count
+                                        </td>
+                                    }
+                                    
+                                    <!-- Totalt antal dyk -->
+                                    <td class="total-dives">
+                                        <strong>@row.Total</strong>
+                                    </td>
+
+                                    <!-- Om man valt roll dykare visas total dyktid för alla dyk -->
+                                    @if (Model.SelectedRoleId == 1)
+                                    {
+                                        <td class="total-dive-time">
+                                            @row.TotalDiveTimeFormatted
+                                        </td>
+                                    }
+                                </tr>
+                            }
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- TABELL FÖR SYFTEN -->
+    <div id="purposeTable" class="statistics-section @(Model.ActiveTab == "purposes" ? "" : "hidden")">
+
+        <div class="statistics-table-wrapper">
+            <table class="statistics-table">
+                <thead>
+                    <tr>
+                        <th>Person</th>
+
+                        <!-- Skriver ut alla syften som rubriker -->
+                        @foreach (var purpose in Model.PurposeRows.FirstOrDefault()?.PurposeCounts.Keys.ToList() ?? new List<string>())
+                        {
+                            <th class="purpose-header">@purpose</th>
+                        }
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    @foreach (var row in Model.PurposeRows)
+                    {
+                        <tr>
+                            <!-- Personnnamn för alla dykare -->
+                            <td class="person-cell">
+                                <strong>@row.Signature</strong>
+                                <br />
+                                @row.PersonName
+                            </td>
+
+                            <!-- Antal dyk per syfte skrivs ut -->
+                            @foreach (var count in row.PurposeCounts.Values)
+                            {
+                                <!-- Om syftet är utfört får man nytt klassnamn för styling -->
+                                <td class="@(count > 0 ? "has-dives" : "")">
+                                    @count
+                                </td>
+                            }
+
+                        </tr>
+                    }
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+</div>
+
+<script>
+    //Eventlyssnare för att uppdatera tabellinnehåll efter man bytt filtrering
+    const filterForm = document.querySelector(".statistics-filter-form");
+
+    document.querySelectorAll(".statistics-filter-form select")
+        .forEach(select => {
+
+            select.addEventListener("change", () => {
+                filterForm.submit();
+            });
+
+        });
+
+</script>
+
+<script>
+
+    //Lägger till/tar bort klassen "active" på vald flik
+    function setActiveTab(activeButton) {
+        document.querySelectorAll(".tabs-btn button").forEach(btn => {
+            btn.classList.remove("active");
+        });
+
+        activeButton.classList.add("active");
+    }
+
+    //Vid klick på fliken "Antal dykövningar" visas tabellen för antal dyk.
+    function showNumberOfDives(button) {
+
+        setActiveTab(button);
+        document.getElementById("activeTab").value = "dives";
+
+        document.getElementById("divesTable")
+            .classList.remove("hidden");
+
+        document.getElementById("purposeTable")
+            .classList.add("hidden");
+
+        // VISA rollfilter
+        document.getElementById("role-filter")
+            .classList.remove("hidden");
+    }
+
+    //Vid klick på fliken "Syften" visas tabellen för syften.
+    function showDivePurposes(button) {
+
+        setActiveTab(button);
+        document.getElementById("activeTab").value = "purposes";
+
+        document.getElementById("purposeTable")
+            .classList.remove("hidden");
+
+        document.getElementById("divesTable")
+            .classList.add("hidden");
+
+        // GÖM rollfilter
+        document.getElementById("role-filter")
+            .classList.add("hidden");
+    }
+
+</script>

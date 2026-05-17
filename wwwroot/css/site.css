@@ -169,7 +169,7 @@ footer {
   max-width: 1920px;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 800px) {
 
   .main-nav {
     background: linear-gradient(180deg, #27374D, #27374dbe, #27374d00);

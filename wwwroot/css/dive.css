@@ -210,6 +210,14 @@
     color: white;
 }
 
+/*Flikutseende för små skärmar*/
+@media (max-width: 500px) {
+    .tabs-btn button {
+        font-size: 1em;
+        padding: 10px 10px;
+    }
+}
+
 .dive-form {
     width: 90vw;
     max-width: 900px;
@@ -448,6 +456,12 @@
     align-items: start;
 }
 
+@media (max-width: 650px) {
+    .details-layout {
+        grid-template-columns: 1fr;
+    }
+}
+
 .details-list {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -517,6 +531,12 @@
     flex-wrap: nowrap;
 }
 
+@media (max-width: 500px) {
+    .details-button-wrapper {
+       flex-direction: column;
+    }
+}
+
 /*STYLING FÖR SIDORNA DETALJER OCH TA BORT - SLUT*/
 
 /*STYLING FÖR TIMER - START*/
@@ -550,6 +570,10 @@
     }
 }
 
+.margin {
+    margin-bottom: 50px;
+}
+
 #buddy-timer-wrapper {
     margin: auto auto 1rem auto;
 }
@@ -566,16 +590,38 @@
 .timer-row {
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: space-between;
     gap: 1rem;
     padding: 0.5rem 1rem;
+    text-align: center;
+    border-top: #e6e6e6;
+    border-width: 1px;
+    border-top-style: solid;
 }
 
 .timer-label,
-.timer-row span {
+.timer-time {
     display: flex;
     align-items: center;
     height: 40px;
+    font-size: 2rem;
+}
+
+.timer-label {
+    width: 110px;
+    justify-content: center;
+}
+
+.timer-time {
+    font-size: 2rem;
+    margin: 0 auto;
+}
+
+.timer-buttons {
+    display: flex;
+    gap: 1rem;
+    width: 110px;
+    justify-content: end;
 }
 
 .timer-btn {
@@ -596,6 +642,31 @@
 
 .stop-btn {
     background-color: #dc0400;
+}
+
+@media (max-width: 420px) {
+
+    .timer-label {
+        font-size: 1em;
+        width: 80px;
+    }
+
+    .timer-time {
+        font-size: 1em;
+    }
+
+    .timer-buttons {
+        width: 80px;
+    }
+
+    .timer-btn {
+        width: 30px;
+        height: 30px;
+    }
+
+    .timer-wrapper {
+        min-width: 200px;
+    }
 }
 
 /*STYLING FÖR TIMER - SLUT*/

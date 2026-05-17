@@ -1,3 +1,5 @@
+//Kod för uträkning av Kvävebelastning
+
 function calculateExposure(depth, time) {
     if (!depth || !time) return 0;
 

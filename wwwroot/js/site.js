@@ -1,4 +1,6 @@
-﻿document.addEventListener("DOMContentLoaded", function () {
+﻿//Kod för hamburgermeny
+
+document.addEventListener("DOMContentLoaded", function () {
 
     const toggleBtn = document.getElementById("menuToggle");
     const navList = document.getElementById("navList");
