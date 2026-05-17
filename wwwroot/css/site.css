@@ -223,3 +223,43 @@ footer {
   }
 
 }
+
+/*STYLING FÖR OFFLINE-SIDAN -START*/
+.offline-wrapper {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  text-align: center;
+  padding: 2rem;
+  background-color: #27374D;
+}
+
+.offline-logo {
+  width: 120px;
+  height: auto;
+}
+
+.offline-wrapper p {
+  max-width: 400px;
+}
+
+.offline-wrapper button {
+  text-decoration: none;
+  background-color: #E17100;
+  color: white;
+  border: none;
+  box-shadow: 5px 5px 0px rgba(100, 100, 100, 0.7);
+  height: 40px;
+  width: 110px;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.offline-wrapper button:hover {
+  transform: scale(1.05);
+}
+
+/*STYLING FÖR OFFLINE-SIDAN - SLUT*/

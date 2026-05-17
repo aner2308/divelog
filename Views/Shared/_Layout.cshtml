@@ -5,6 +5,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Divelog</title>
+    <!-- Fontstyle -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Jura:wght@300..700&display=swap" rel="stylesheet">
@@ -12,44 +13,61 @@
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <!-- Leaflet CSS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <!-- Logotyp och Favicon -->
     <link rel="icon" type="image/png" sizes="32x32" href="~/images/faviconS.png">
-        <link rel="icon" type="image/png" sizes="192x192" href="~/images/faviconL.png">
-            <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-            <link rel="stylesheet" href="~/css/dive.css" asp-append-version="true" />
-            <link rel="stylesheet" href="~/css/auth.css" asp-append-version="true" />
-            <link rel="stylesheet" href="~/css/admin.css" asp-append-version="true" />
-            <link rel="stylesheet" href="~/css/person.css" asp-append-version="true" />
-            <link rel="stylesheet" href="~/divelog.styles.css" asp-append-version="true" />
+    <link rel="icon" type="image/png" sizes="192x192" href="~/images/faviconL.png">
+    <!-- PWA -->
+    <link rel="manifest" href="~/manifest.json">
+    <meta name="theme-color" content="#27374D">
+    <!-- iOS support -->
+    <link rel="apple-touch-icon" href="~/images/favicon.png">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <!-- CSS -->
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/dive.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/admin.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/person.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/divelog.styles.css" asp-append-version="true" />
 
-            @RenderSection("LayoutStyles", required: false)
-        </head>
+    @RenderSection("LayoutStyles", required: false)
+</head>
 
-        <body>
-            <div class="page-wrapper">
+<body>
+    <div class="page-wrapper">
 
-                <a asp-controller="Home" asp-action="Index" class="logo-link">
-                    <img src="/images/faviconL.png" alt="Logo" class="logo-Top-Left">
-                </a>
+        <a asp-controller="Home" asp-action="Index" class="logo-link">
+            <img src="/images/faviconL.png" alt="Logo" class="logo-Top-Left">
+        </a>
 
-                <div class="main-content">
-                    <header>
-                        @await Html.PartialAsync("_Menu")
-                    </header>
+        <div class="main-content">
+            <header>
+                @await Html.PartialAsync("_Menu")
+            </header>
 
-                    <main>
-                        @RenderBody()
-                    </main>
-                </div>
-                <footer>
-                    <div>
-                        <p>&copy; 2026 - Divelog</p>
-                    </div>
-                </footer>
+            <main>
+                @RenderBody()
+            </main>
+        </div>
+        <footer>
+            <div>
+                <p>&copy; 2026 - Divelog</p>
             </div>
+        </footer>
+    </div>
 
-            <script src="~/lib/jquery/dist/jquery.min.js"></script>
-            <script src="~/js/site.js" asp-append-version="true"></script>
-            @await RenderSectionAsync("Scripts", required: false)
-        </body>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
 
-    </html>
+    <script>
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('/service-worker.js')
+        .then(reg => console.log('Service Worker registrerad', reg))
+        .catch(err => console.log('Service Worker misslyckades', err));
+        }
+    </script>
+</body>
+
+</html>
