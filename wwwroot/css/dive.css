@@ -70,12 +70,12 @@
     transition: transform 0.2s ease;
 }
 
-.remove-btn {
-    background-color: #dc0400 !important;
-}
-
 .table-btn:hover {
     transform: scale(1.05);
+}
+
+.remove-btn {
+    background-color: #dc0400 !important;
 }
 
 .button-wrapper {
