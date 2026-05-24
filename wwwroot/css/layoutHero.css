@@ -7,15 +7,77 @@
 .hero-background {
     position: absolute;
     inset: 0;
-    background-image: linear-gradient(to bottom,
+    background-image:
+        linear-gradient(to bottom,
             #27374d00,
             #27374d48,
-            #27374D), url('/images/hero.jpg');
+            #27374D),
+        url('/images/hero-small.jpg');
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
     transform: scale(1.01);
     z-index: 0;
+}
+
+/* WebP support */
+@supports (background-image: url('/images/hero-small.webp')) {
+    .hero-background {
+        background-image:
+            linear-gradient(to bottom,
+                #27374d00,
+                #27374d48,
+                #27374D),
+            url('/images/hero-small.webp');
+    }
+}
+
+/* Medium */
+@media (min-width: 768px) {
+
+    .hero-background {
+        background-image:
+            linear-gradient(to bottom,
+                #27374d00,
+                #27374d48,
+                #27374D),
+            url('/images/hero-medium.jpg');
+    }
+
+    @supports (background-image: url('/images/hero-medium.webp')) {
+        .hero-background {
+            background-image:
+                linear-gradient(to bottom,
+                    #27374d00,
+                    #27374d48,
+                    #27374D),
+                url('/images/hero-medium.webp');
+        }
+    }
+}
+
+/* Large */
+@media (min-width: 1400px) {
+
+    .hero-background {
+        background-image:
+            linear-gradient(to bottom,
+                #27374d00,
+                #27374d48,
+                #27374D),
+            url('/images/hero-large.jpg');
+    }
+
+    @supports (background-image: url('/images/hero-large.webp')) {
+        .hero-background {
+            background-image:
+                linear-gradient(to bottom,
+                    #27374d00,
+                    #27374d48,
+                    #27374D),
+                url('/images/hero-large.webp');
+        }
+    }
 }
 
 .hero-background::after {

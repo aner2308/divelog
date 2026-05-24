@@ -19,7 +19,22 @@
             </p>
         </div>
         <div class="about-image">
-            <img src="/images/diver-standing.jpg" alt="Dykare som står på isen">
+            <picture>
+                <!-- Small WebP -->
+                <source media="(max-width: 400px)" srcset="/images/diver-standing-small.webp" type="image/webp">
+
+                <!-- Small JPG fallback -->
+                <source media="(max-width: 400px)" srcset="/images/diver-standing-small.jpg" type="image/jpeg">
+
+                <!-- Large WebP -->
+                <source media="(min-width: 401px)" srcset="/images/diver-standing-large.webp" type="image/webp">
+
+                <!-- Large JPG fallback -->
+                <source media="(min-width: 401px)" srcset="/images/diver-standing-large.jpg" type="image/jpeg">
+
+                <!-- Fallback -->
+                <img src="/images/diver-standing-large.jpg" alt="Dykare som står på isen">
+            </picture>
 
             <div class="image-overlay1"></div>
             <div class="image-overlay2"></div>

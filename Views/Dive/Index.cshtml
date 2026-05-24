@@ -109,11 +109,16 @@
 
                         <td>
                             <div class="button-wrapper">
+                                <!-- Visas endast om inloggad användare är Admin eller Editor -->
                                 @if (User.IsInRole("Admin") || User.IsInRole("Editor"))
                                 {
                                     <a asp-action="Edit" asp-route-id="@dive.Id" class="table-btn">Redigera</a>
                                 }
+
+                                <!-- Visas för alla inloggade användare -->
                                 <a asp-action="Details" asp-route-id="@dive.Id" class="table-btn">Detaljer</a>
+
+                                <!-- Visas endast om inloggad användare är Admin eller Editor -->
                                 @if (User.IsInRole("Admin") || User.IsInRole("Editor"))
                                 {
                                     <a asp-action="Delete" asp-route-id="@dive.Id" class="table-btn remove-btn">Radera</a>

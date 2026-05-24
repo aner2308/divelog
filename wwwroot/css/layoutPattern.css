@@ -12,7 +12,7 @@
     position: absolute;
     top: 0;
     left: 0;
-    background-image: url("/images/backgroundPattern.png");
+    background-image: url("/images/backgroundPattern.jpg");
     background-repeat: repeat;
     background-size: 300px 300px;
     height: 100%;
@@ -20,6 +20,14 @@
     width: 35vw;
     max-width: 700px;
     z-index: 1;
+}
+
+/* WebP om browsern stödjer det */
+@supports (background-image: url("/images/backgroundPattern.webp")) {
+
+    .bg-pattern {
+        background-image: url("/images/backgroundPattern.webp");
+    }
 }
 
 .page-content {
