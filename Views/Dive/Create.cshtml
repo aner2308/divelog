@@ -648,8 +648,8 @@
             var lng = e.latlng.lng;
 
             //Formatterade värden för ASP.NET
-            var latForInput = lat.toFixed(6).replace('.', ',');
-            var lngForInput = lng.toFixed(6).replace('.', ',');
+            var latForInput = lat.toFixed(6);
+            var lngForInput = lng.toFixed(6);
 
             //Tar bort gammal marker
             if (marker) {

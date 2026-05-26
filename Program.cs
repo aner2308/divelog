@@ -7,7 +7,17 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlite(connectionString));
+    options.UseSqlServer(
+        builder.Configuration.GetConnectionString("DefaultConnection"),
+        sqlOptions =>
+        {
+            sqlOptions.EnableRetryOnFailure(
+                maxRetryCount: 5,
+                maxRetryDelay: TimeSpan.FromSeconds(10),
+                errorNumbersToAdd: null);
+
+            sqlOptions.CommandTimeout(60);
+        }));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 builder.Services.AddDefaultIdentity<IdentityUser>(options =>
@@ -56,8 +66,15 @@ using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
 
-    await IdentitySeeder.SeedRolesAsync(services);
-    await IdentitySeeder.SeedAdminAsync(services);
+    try
+    {
+        await IdentitySeeder.SeedRolesAsync(services);
+        await IdentitySeeder.SeedAdminAsync(services);
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"Seed error: {ex.Message}");
+    }
 }
 
 app.Run();
