@@ -1,0 +1,4 @@
+{
+    "appService.defaultWebAppToDeploy": "/subscriptions/7202c33d-92fe-4e8b-8fbc-35a12c8b7dec/resourceGroups/divelog-project-rg/providers/Microsoft.Web/sites/divelogproject",
+    "appService.deploySubpath": "bin\\Release\\net10.0\\publish"
+}
