@@ -97,16 +97,16 @@
                                     }
                                 </select>
 
-                                <label>Lufttryck före: </label>
+                                <label asp-for="PairGroups[@pairIndex].Divers[@diverIndex].AirPressureBefore">Lufttryck före: </label>
                                 <input asp-for="PairGroups[@pairIndex].Divers[@diverIndex].AirPressureBefore" />
 
-                                <label>Djup: </label>
+                                <label asp-for="PairGroups[@pairIndex].Divers[@diverIndex].Depth">Djup: </label>
                                 <input asp-for="PairGroups[@pairIndex].Divers[@diverIndex].Depth" class="depth-input" />
 
-                                <label>Dyktid: </label>
+                                <label  asp-for="PairGroups[@pairIndex].Divers[@diverIndex].DiveTime">Dyktid: </label>
                                 <input asp-for="PairGroups[@pairIndex].Divers[@diverIndex].DiveTime" class="time-input" />
 
-                                <label>Lufttryck efter: </label>
+                                <label asp-for="PairGroups[@pairIndex].Divers[@diverIndex].AirPressureAfter" >Lufttryck efter: </label>
                                 <input asp-for="PairGroups[@pairIndex].Divers[@diverIndex].AirPressureAfter" />
 
                 
@@ -159,7 +159,7 @@
                 <div class="surface-support-card" id="group-@i">
                     <h5 class="surface-title">Dykare @(i + 1)</h5>
                     <div class="form-row">
-                        <label>Dykare: </label>
+                        <label asp-for="SurfaceSupportGroups[@i].DiverId">Dykare: </label>
                         <select asp-for="SurfaceSupportGroups[@i].DiverId">
                             <option value="">Välj dykare</option>
                             @foreach (var person in Model.Divers)
@@ -170,7 +170,7 @@
                     </div>
 
                     <div class="form-row">
-                        <label>Dykarskötare: </label>
+                        <label asp-for="SurfaceSupportGroups[@i].SurfaceSupportId">Dykarskötare: </label>
                         <select asp-for="SurfaceSupportGroups[@i].SurfaceSupportId">
                             <option value="">Välj dykarskötare</option>
                             @foreach (var person in Model.SurfaceSupports)
@@ -181,22 +181,22 @@
                     </div>
 
                     <div class="form-row">
-                        <label>Lufttryck före: </label>
+                        <label asp-for="SurfaceSupportGroups[@i].AirPressureBefore">Lufttryck före: </label>
                         <input asp-for="SurfaceSupportGroups[@i].AirPressureBefore" />
                     </div>
 
                     <div class="form-row">
-                        <label>Lufttryck efter: </label>
+                        <label asp-for="SurfaceSupportGroups[@i].AirPressureAfter">Lufttryck efter: </label>
                         <input asp-for="SurfaceSupportGroups[@i].AirPressureAfter" />
                     </div>
 
                     <div class="form-row">
-                        <label>Djup: </label>
+                        <label asp-for="SurfaceSupportGroups[@i].Depth">Djup: </label>
                         <input asp-for="SurfaceSupportGroups[@i].Depth" class="depth-input" />
                     </div>
 
                     <div class="form-row">
-                        <label>Dyktid: </label>
+                        <label asp-for="SurfaceSupportGroups[@i].DiveTime">Dyktid: </label>
                         <input asp-for="SurfaceSupportGroups[@i].DiveTime" class="time-input" />
                     </div>
 
@@ -335,7 +335,7 @@
                     <option value="">Välj dykare</option>
                     @foreach (var person in Model.Divers)
                     {
-                                                                                        <option value="@person.Id">@person.Signature - @person.Name</option>
+                        <option value="@person.Id">@person.Signature - @person.Name</option>
                     }
                 </select>
             </div>
@@ -346,7 +346,7 @@
                     <option value="">Välj dykarskötare</option>
                     @foreach (var person in Model.SurfaceSupports)
                     {
-                                                                                        <option value="@person.Id">@person.Signature - @person.Name</option>
+                        <option value="@person.Id">@person.Signature - @person.Name</option>
                     }
                 </select>
             </div>

@@ -23,7 +23,8 @@
 <div class="page-container">
     <div class="table-tools">
         <form method="get" class="person-filter-form">
-            <select name="groupId" asp-items="ViewBag.Groups" onchange="this.form.submit()">
+            <label for="groupId" class="hidden-label">Välj grupp</label>
+            <select name="groupId" id="groupId" asp-items="ViewBag.Groups" onchange="this.form.submit()">
                 <option value="">Alla grupper</option>
             </select>
         </form>
