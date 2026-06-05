@@ -32,6 +32,7 @@
 
             <div class="filter-row">
                 <!-- ÅR -->
+                <label for="year" class="hidden-label">Välj år</label>
                 <select name="year" id="year">
                     @for (int year = DateTime.Now.Year; year >= 2020; year--)
                     {
@@ -51,6 +52,7 @@
                 </select>
 
                 <!-- GRUPP -->
+                <label for="groupId" class="hidden-label">Välj grupp</label>
                 <select name="groupId" id="groupId">
 
                     <option value="">
@@ -77,6 +79,7 @@
                 <!-- ROLL -->
                 <!-- Select-menyn försvinner om man är på syfte-tabellen -->
                 <div id="role-filter" class="@(Model.ActiveTab == "purposes" ? "hidden" : "")">
+                    <label for="roleId" class="hidden-label">Välj roll</label>
                     <select name="roleId" id="roleId">
 
                         @foreach (var role in Model.Roles)

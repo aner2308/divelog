@@ -24,13 +24,16 @@
 <div class="page-container">
     <div class="table-tools">
         <form method="get" class="dive-filter-form">
-            <select name="groupId" asp-items="ViewBag.Groups" onchange="this.form.submit()">
+            <label for="groupId" class="hidden-label">Välj grupp</label>
+            <select name="groupId" id="groupId" asp-items="ViewBag.Groups" onchange="this.form.submit()">
                 <option value="">Alla grupper</option>
             </select>
-            <select name="personId" asp-items="ViewBag.Persons" onchange="this.form.submit()">
+            <label for="personId" class="hidden-label">Välj person</label>
+            <select name="personId" id="personId" asp-items="ViewBag.Persons" onchange="this.form.submit()">
                 <option value="">Alla personer</option>
             </select>
-            <select name="divePurposeId" asp-items="ViewBag.Purposes" onchange="this.form.submit()">
+            <label for="divePurposeId" class="hidden-label">Välj syfte</label>
+            <select name="divePurposeId" id="divePurposeId" asp-items="ViewBag.Purposes" onchange="this.form.submit()">
                 <option value="">Alla syften</option>
             </select>
         </form>
